@@ -54,10 +54,10 @@ jobs:
           name: app
           path: app/build/reports/lint-results-debug.html
 
-    build:
+  build:
       name: Job Build
       runs-on: ubuntu-latest
-      if: github.ref == 'refs/heads/test-ci'
+#      if: github.ref == 'refs/heads/test-ci'
       steps:
         - uses: actions/checkout@v3
         - name: set up JDK 11
