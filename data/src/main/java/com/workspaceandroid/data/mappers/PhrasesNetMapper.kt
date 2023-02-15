@@ -11,6 +11,7 @@ import javax.inject.Inject
 
 class PhrasesNetMapper @Inject constructor(private val timeHelper: ITimeHelper) :
     EntityMapper<PhraseNetDTO, Phrase> {
+
     override fun mapFromEntity(entity: PhraseNetDTO): Phrase {
         val createdAtTimeStamp =
             timeHelper.getLongFromString(entity.createdAt, TIME_FORMAT_RESPONSE_UTC_PATTERN)
