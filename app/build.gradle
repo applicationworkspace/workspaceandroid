@@ -48,6 +48,10 @@ android {
     }
 }
 
+task printVersionName {
+    println project.ext.version_name
+}
+
 dependencies {
     implementation project(path: ':domain')
     implementation project(path: ':data') //TODO remove
