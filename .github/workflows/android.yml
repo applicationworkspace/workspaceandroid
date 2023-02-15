@@ -13,28 +13,7 @@ on:
       - qa
       - test-ci
 jobs:
-  test:
-    name: Job Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
 
-      - name: Unit tests
-        run: bash ./gradlew test --stacktrace
-      - name: Unit tests results
-        uses: actions/upload-artifact@v3
-        with:
-          name: unit-tests-results.html
-          path: app/build/reports/tests/testDebugUnitTest/test-results.html
-
-#  <job_id>:
-#    needs:
   lint:
     name: Job Lint Check
     runs-on: ubuntu-latest
@@ -53,26 +32,58 @@ jobs:
       - name: Lint results
         uses: actions/upload-artifact@v1
         with:
-          name: lint-results.html
+          name: lint-results
           path: app/build/reports/lint-results-debug.html
 
-#  build:
-#      name: Job Build
-#      runs-on: ubuntu-latest
-##      if: github.ref == 'refs/heads/test-ci'
-#      steps:
-#        - uses: actions/checkout@v3
-#        - name: set up JDK 11
-#          uses: actions/setup-java@v3
-#          with:
-#            java-version: '11'
-#            distribution: 'temurin'
-#            cache: gradle
-#
-#        - name: Grant execute permission for gradlew
-#          run: chmod +x gradlew
+  test:
+    needs: [ lint ]
+    name: Job Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+
+      - name: Unit tests
+        run: bash ./gradlew test --stacktrace
+      - name: Unit tests results
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-tests-results
+          path: app/build/reports/tests/testDebugUnitTest/test-results.html
+
+  build:
+    needs: [ test ]
+      name: Job Build
+      runs-on: ubuntu-latest
+#      if: github.ref == 'refs/heads/test-ci'
+      steps:
+        - uses: actions/checkout@v3
+        - name: set up JDK 11
+          uses: actions/setup-java@v3
+          with:
+            java-version: '11'
+            distribution: 'temurin'
+            cache: gradle
+
+        - name: Grant execute permission for gradlew
+          run: chmod +x gradlew
 #        - name: Build with Gradle
 #          run: ./gradlew build
+
+        - name: Build debug APK
+          run: ./gradlew assembleDebug
+        - name: Upload APK
+          uses: actions/upload-artifact@v2
+          with:
+            name: workspace.apk
+            path: app/build/outputs/apk/debug/app-debug.apk
+
 
 #  publish-build:
 #    runs-on: ubuntu-latest
