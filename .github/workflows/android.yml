@@ -107,7 +107,8 @@ jobs:
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: testers
+          groups: app-testers
+          releaseNotes: ${{ github.event.head_commit.message }}
           file: app/build/outputs/apk/release/app-release-unsigned.apk
 
   # "notify" workflow for slack notification
