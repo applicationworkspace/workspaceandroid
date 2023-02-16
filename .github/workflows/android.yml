@@ -79,10 +79,14 @@ jobs:
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
+
+      # Set VERSION_NAME
+      - run: echo "VERSION_NAME=$(${{github.workspace}}/gradlew -q printVersionInformation)" >> $GITHUB_ENV
+
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: workspace.apk
+          name: workspace_${{ env.VERSION_NAME }}.apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
 

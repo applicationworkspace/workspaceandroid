@@ -33,7 +33,7 @@ class CollectionRepositoryTest {
         val phrasesDomain = listOf(defaultPhraseModel(), defaultPhraseModel())
 
         whenever(netSource.fetchUserPhrases()).thenReturn(phrasesNetDTO)
-//        whenever(phrasesNetMapper.fromEntityList(phrasesNetDTO)).thenReturn(phrasesDomain)
+        whenever(phrasesNetMapper.fromEntityList(phrasesNetDTO)).thenReturn(phrasesDomain)
 
         //when
         val phrasesResult = collectionRepository.fetchUserPhrases()
