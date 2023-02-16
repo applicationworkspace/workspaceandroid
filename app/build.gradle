@@ -4,7 +4,6 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
 }
-
 android {
     namespace 'com.workspaceandroid'
     compileSdk 33
@@ -20,6 +19,10 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+    }
+
+    task printVersionInformation {
+        println "v" + defaultConfig.versionName + " (" + defaultConfig.versionCode + ")"
     }
 
     buildTypes {
@@ -46,10 +49,6 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-}
-
-task printVersionName {
-    println project.ext.version_name
 }
 
 dependencies {
