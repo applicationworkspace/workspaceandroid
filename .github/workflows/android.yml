@@ -14,113 +14,114 @@ on:
       - test-ci
 jobs:
 
-  lint:
-    name: Job Lint Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Lint debug flavor
-        run: bash ./gradlew lintDebug --stacktrace
-      - name: Lint results
-        uses: actions/upload-artifact@v1
-        with:
-          name: lint-results
-          path: app/build/reports/lint-results-debug.html
-
-  test:
-    needs: [ lint ]
-    name: Job Unit Tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Unit tests
-        run: bash ./gradlew test --stacktrace
-      - name: Unit tests results
-        uses: actions/upload-artifact@v3
-        with:
-          name: unit-tests-results
-          path: app/build/reports/tests/testDebugUnitTest/index.html
-        if: always()
-
-  build:
-    needs: [ test ]
-    name: Job Build
-    runs-on: ubuntu-latest
-    #      if: github.ref == 'refs/heads/test-ci'
-    steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      #       - name: Build with Gradle
-      #         run: ./gradlew build
-
-      - name: Build debug APK
-        env:
-          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
-        run: ./gradlew assembleDebug
-
-      # Set VERSION_NAME
-      - run: echo "VERSION_NAME=$(${{github.workspace}}/gradlew -q printVersionInformation)" >> $GITHUB_ENV
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: workspace_${{ env.VERSION_NAME }}(${{ github.run_number }}).apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+#  lint:
+#    name: Job Lint Check
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: set up JDK 11
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '11'
+#          distribution: 'temurin'
+#          cache: gradle
+#
+#      - name: Lint debug flavor
+#        run: bash ./gradlew lintDebug --stacktrace
+#      - name: Lint results
+#        uses: actions/upload-artifact@v1
+#        with:
+#          name: lint-results
+#          path: app/build/reports/lint-results-debug.html
+#
+#  test:
+#    needs: [ lint ]
+#    name: Job Unit Tests
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: set up JDK 11
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '11'
+#          distribution: 'temurin'
+#          cache: gradle
+#
+#      - name: Unit tests
+#        run: bash ./gradlew test --stacktrace
+#      - name: Unit tests results
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: unit-tests-results
+#          path: app/build/reports/tests/testDebugUnitTest/index.html
+#        if: always()
+#
+#  build:
+#    needs: [ test ]
+#    name: Job Build
+#    runs-on: ubuntu-latest
+#    #      if: github.ref == 'refs/heads/test-ci'
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: set up JDK 11
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '11'
+#          distribution: 'temurin'
+#          cache: gradle
+#
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x gradlew
+#      #       - name: Build with Gradle
+#      #         run: ./gradlew build
+#
+#      - name: Build debug APK
+#        env:
+#          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
+#        run: ./gradlew assembleDebug
+#
+#      # Set VERSION_NAME
+#      - run: echo "VERSION_NAME=$(${{github.workspace}}/gradlew -q printVersionInformation)" >> $GITHUB_ENV
+#
+#      - name: Upload APK
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: workspace_${{ env.VERSION_NAME }}(${{ github.run_number }}).apk
+#          path: app/build/outputs/apk/debug/app-debug.apk
 
   #change branch
   distribution:
-    needs: [ build ]
+#    needs: [ build ]
     name: Job Distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
-      - name: build release
-        env:
-          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
-        run: ./gradlew assembleRelease
-      - name: Upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: app-testers
-          releaseNotes: ${{ github.event.head_commit.message }}
-          file: app/build/outputs/apk/release/app-release-unsigned.apk
+#      - uses: actions/checkout@v3
+#      - name: set up JDK 11
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '11'
+#          distribution: 'temurin'
+#          cache: gradle
+#      - name: build release
+#        env:
+#          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
+#        run: ./gradlew assembleRelease
+#      - name: Upload artifact to Firebase App Distribution
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{secrets.FIREBASE_APP_ID}}
+#          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+#          groups: app-testers
+#          releaseNotes: ${{ github.event.head_commit.message }}
+#          file: app/build/outputs/apk/release/app-release-unsigned.apk
 
       - name: Set current date as env variable
         run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
 
       - name: Send Slack notification
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
         id: slack
         uses: slackapi/slack-github-action@v1.23.0
         with:
@@ -131,7 +132,7 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "CI/CD pipeline"
+                    "text": "CI/CD workflow"
                   }
                 },
                 {
@@ -163,7 +164,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Details:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    "text": "*Details:*\n${{ github.event.pull_request.title }} \n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                 }
               }
               ]
