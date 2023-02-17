@@ -79,7 +79,7 @@ jobs:
 
       - name: Build debug APK
         env:
-          PIPELINE_RUN_ID: ${{ github.run_id }}
+          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
         run: ./gradlew assembleDebug
 
       # Set VERSION_NAME
@@ -106,7 +106,7 @@ jobs:
           cache: gradle
       - name: build release
         env:
-          PIPELINE_RUN_ID: ${{ github.run_id }}
+          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
         run: ./gradlew assembleRelease
       - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
