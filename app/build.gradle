@@ -4,25 +4,23 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
 }
+
 android {
     namespace 'com.workspaceandroid'
     compileSdk 33
 
     defaultConfig {
+
         applicationId "com.workspaceandroid"
         minSdk 28
         targetSdk 33
-        versionCode 1
-        versionName "1.0.0"
+        versionCode getAppVersionCode()
+        versionName getAppVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
         }
-    }
-
-    task printVersionInformation {
-        println "v" + defaultConfig.versionName + "(" + defaultConfig.versionCode + ")"
     }
 
     buildTypes {
@@ -48,6 +46,11 @@ android {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
+    }
+
+    // ci artifact
+    task printVersionInformation {
+        println "v" + getAppVersionName()
     }
 }
 

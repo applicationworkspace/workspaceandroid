@@ -1,0 +1,20 @@
+def DEFAULT_PIPELINE_RUN_NUMBER = 1
+
+ext {
+    appSetup = [
+            majorVersion: 1,
+            minorVersion: 0,
+            patchVersion: 0
+    ]
+
+    getAppVersionCode = {
+        def code = System.getenv("PIPELINE_RUN_NUMBER")
+//        return (appSetup.majorVersion * 100000)
+//                .plus(appSetup.minorVersion * 10000)
+//                .plus(appSetup.patchVersion * 1000)
+//                .plus((code != null && !code.isEmpty()) ? code.toInteger() : DEFAULT_PIPELINE_RUN_ID)
+        return (code != null && !code.isEmpty()) ? code.toInteger() : DEFAULT_PIPELINE_RUN_NUMBER
+    }
+
+    getAppVersionName = { "${appSetup.majorVersion}.${appSetup.minorVersion}.${appSetup.patchVersion}" }
+}
