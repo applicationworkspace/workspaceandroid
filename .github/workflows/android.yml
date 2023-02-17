@@ -123,18 +123,19 @@ jobs:
         with:
           payload: |
             {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": "*GitHub Action Job result: ${{
-            job.status }}*\n*For more details, follow the link:* ${{
-            github.server_url }}/${{ github.repository }}/actions/runs/${{
-            github.run_id }}"
-                },
-                {
-                  "type": "divider"
-                }
-              ]
+              "text": "Hello"
+#              "blocks": [
+#                {
+#                  "type": "section",
+#                  "text": "*GitHub Action Job result: ${{
+#            job.status }}*\n*For more details, follow the link:* ${{
+#            github.server_url }}/${{ github.repository }}/actions/runs/${{
+#            github.run_id }}"
+#                },
+#                {
+#                  "type": "divider"
+#                }
+#              ]
             }
         env:
           SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
