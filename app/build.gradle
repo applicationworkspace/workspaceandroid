@@ -50,7 +50,7 @@ android {
 
     // ci artifact
     task printVersionInformation {
-        println "v" + getAppVersionName() + "(" + getAppVersionCode() + ")"
+        println "v" + getAppVersionName()
     }
 }
 
