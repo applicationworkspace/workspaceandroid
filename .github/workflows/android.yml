@@ -118,8 +118,8 @@ jobs:
 #          file: app/build/outputs/apk/release/app-release-unsigned.apk
 
       - name: Send slack notification
-        uses: slackapi/slack-github-action@v1.18.0
-        if: ${{ success() }}
+        uses: slackapi/slack-github-action@v1.23.0
+#        if: ${{ success() }}
         with:
           payload: |
             {
