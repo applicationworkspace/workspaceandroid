@@ -152,7 +152,7 @@ jobs:
                   "fields": [
                     {
                       "type": "mrkdwn",
-                      "text": "*When:*\n Fri 17 Feb"
+                      "text": "*When:*\n${{ env.NOW }}"
                     }
                   ]
                 },
