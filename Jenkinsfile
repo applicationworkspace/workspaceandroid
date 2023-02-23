@@ -1,24 +1,32 @@
 pipeline {
-    agent any
-    options {
-        skipStagesAfterUnstable()
+  agent {
+    label 'android'
+  }
+  options {
+    skipStagesAfterUnstable()
+  }
+  stages {
+    stage('Compile') {
+      steps {
+        sh './gradlew compileDebugSources'
+      }
     }
-    stages {
-        stage('Build') {
-            steps {
-                sh 'make'
-            }
-        }
-        stage('Test'){
-            steps {
-                sh 'make check'
-                junit 'reports/**/*.xml'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sh 'make publish'
-            }
-        }
+    stage('Unit test') {
+      steps {
+        sh './gradlew testDebugUnitTest'
+        junit '**/TEST-*.xml'
+      }
+    }
+    stage('Build APK') {
+      steps {
+        sh './gradlew assembleDebug'
+        archiveArtifacts '**/*.apk'
+      }
+    }
+    stage('Static analysis') {
+      steps {
+        sh './gradlew lintDebug'
+        androidLint pattern: '**/lint-results-*.xml'
+      }
     }
 }
