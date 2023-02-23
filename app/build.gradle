@@ -52,7 +52,7 @@ android {
     task printVersionInformation {
         println "v" + getAppVersionName()
     }
-    buildToolsVersion '23.0.3'
+    buildToolsVersion '33.0.1'
 }
 
 dependencies {
