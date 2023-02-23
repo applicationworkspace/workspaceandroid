@@ -1,6 +1,6 @@
 pipeline {
   agent {
-    label 'android'
+    label 'Built-In Node'
   }
   options {
     skipStagesAfterUnstable()
