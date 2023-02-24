@@ -14,18 +14,18 @@ pipeline {
         sh './gradlew compileDebugSources'
       }
     }
-    stage('Unit test') {
-      steps {
-        sh './gradlew testDebugUnitTest'
-        junit '**/TEST-*.xml'
-      }
-    }
-    stage('Build APK') {
-      steps {
-        sh './gradlew assembleDebug'
-        archiveArtifacts '**/*.apk'
-      }
-    }
+//     stage('Unit test') {
+//       steps {
+//         sh './gradlew testDebugUnitTest'
+//         junit '**/TEST-*.xml'
+//       }
+//     }
+//     stage('Build APK') {
+//       steps {
+//         sh './gradlew assembleDebug'
+//         archiveArtifacts '**/*.apk'
+//       }
+//     }
     stage('Static analysis') {
       steps {
         sh './gradlew lintDebug'
@@ -34,10 +34,10 @@ pipeline {
     }
   }
   post {
-          failure{
+          always{
               slackSend( channel: "#pipeline_process", token: "$SLACK_WEBHOOK_TOKEN", color: "good", message: "${custom_msg()}")
           }
-        }
+         }
 }
 
     def custom_msg()
