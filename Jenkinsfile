@@ -5,9 +5,6 @@ pipeline {
   options {
     skipStagesAfterUnstable()
   }
-  environment {
-          SLACK_WEBHOOK_TOKEN     = credentials('jenkins-slack-token')
-  }
   stages {
     stage('Compile') {
       steps {
@@ -35,9 +32,11 @@ pipeline {
   }
   post {
           always{
-              slackSend( channel: "#pipeline_process", token: "$SLACK_WEBHOOK_TOKEN", color: "good", message: "${custom_msg()}")
+          withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
+                  slackSend( channel: "#pipeline_process", token: "'${SLACK_TOKEN}'", color: "good", message: "${custom_msg()}")
+              }
           }
-         }
+   }
 }
 
     def custom_msg()
