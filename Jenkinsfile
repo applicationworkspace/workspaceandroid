@@ -5,6 +5,9 @@ pipeline {
   options {
     skipStagesAfterUnstable()
   }
+  environment {
+          SLACK_WEBHOOK_TOKEN     = credentials('jenkins-slack-token')
+  }
   stages {
     stage('Compile') {
       steps {
@@ -26,8 +29,22 @@ pipeline {
     stage('Static analysis') {
       steps {
         sh './gradlew lintDebug'
-        androidLint pattern: '**/lint-results-*.xml'
+        androidLintParser pattern: '**/lint-results-*.xml'
       }
     }
   }
+  post {
+          failure{
+              slackSend( channel: "#pipeline_process", token: "$SLACK_WEBHOOK_TOKEN", color: "good", message: "${custom_msg()}")
+          }
+        }
+}
+
+    def custom_msg()
+    {
+        def JENKINS_URL= "localhost:8080"
+        def JOB_NAME = env.JOB_NAME
+        def BUILD_ID= env.BUILD_ID
+        def JENKINS_LOG= " FAILED: Job [${env.JOB_NAME}] Logs path: ${JENKINS_URL}/job/${JOB_NAME}/${BUILD_ID}/consoleText"
+        return JENKINS_LOG
 }
