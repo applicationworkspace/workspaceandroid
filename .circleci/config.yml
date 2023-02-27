@@ -37,9 +37,9 @@ jobs:
 
       - run:
           name: Create env
-          command: |
+          command: printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
 #            export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
-            printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
+
 
       - run:
           name: Deploy to Firebase
