@@ -12,7 +12,7 @@ jobs:
     executor: android/android
     environment:
       JVM_OPTS: -Xmx2048m
-      GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud.json
+      GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
     steps:
       - checkout
       - android/accept-licenses
@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Create Service Account key JSON
           command: |
-            echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "${HOME}/gcloud.json"
+            echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "gcloud.json"
 
       - run:
           name: Create env
