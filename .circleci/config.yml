@@ -12,6 +12,7 @@ jobs:
     executor: android/android
     environment:
       JVM_OPTS: -Xmx2048m
+      GOOGLE_APPLICATION_CREDENTIALS: "$HOME"/gcloud.json
     steps:
       - checkout
       - android/accept-licenses
@@ -39,8 +40,6 @@ jobs:
           name: Deploy to Firebase
 #          command: GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcloud.json firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --release-notes "Notes here"
           command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --release-notes "Notes here"
-          environment:
-            GOOGLE_APPLICATION_CREDENTIALS: "$HOME"/gcloud.json
 #      - run:
 #          name: App distrubute to firebase
 #          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes-file "/home/circleci/code/release-notes.txt" --testers "your-email@email.com"
