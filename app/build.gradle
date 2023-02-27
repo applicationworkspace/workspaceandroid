@@ -15,7 +15,8 @@ android {
         minSdk 28
         targetSdk 33
         versionCode getAppVersionCode()
-        versionName getAppVersionName()
+        versionCode getBuildVersion() as int
+//        versionName getAppVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -53,6 +54,17 @@ android {
         println "v" + getAppVersionName()
     }
     buildToolsVersion '33.0.1'
+}
+
+// Circle ci BUILD_NUM
+static def getBuildVersion() {
+    def version = 32
+    def buildNumber = System.getenv("CIRCLE_BUILD_NUM")
+    if (buildNumber != null) {
+        version += buildNumber
+    }
+    println("VersionCode: " + version)
+    return version
 }
 
 dependencies {

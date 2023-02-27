@@ -59,8 +59,7 @@ pipeline {
 //                                       	]
 //                                       ]
           withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
-//                   slackSend( channel: "#pipeline_process", token: "'${SLACK_TOKEN}'", color: "#00ff00", message: "${custom_msg()}")
-                slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "jenkinsFile")
+                slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "${custom_msg()}")
               }
           }
    }
