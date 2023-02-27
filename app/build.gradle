@@ -61,7 +61,7 @@ static def getBuildVersion() {
     def version = 32
     def buildNumber = System.getenv("CIRCLE_BUILD_NUM")
     if (buildNumber != null) {
-        version += buildNumber
+        version += buildNumber as int
     }
     println("VersionCode: " + version)
     return version

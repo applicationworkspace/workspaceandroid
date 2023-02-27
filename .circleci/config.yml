@@ -30,8 +30,15 @@ jobs:
           name: Install Firebase CLI
           command: curl -sL firebase.tools | bash
       - run:
-          name: App distrubute to firebase
-          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes-file "/home/circleci/code/release-notes.txt" --testers "your-email@email.com"
+          name: Create Service Account key JSON
+          command: echo $SERVICE_ACCOUNT_KEY > "$HOME"/firebaseAccountKey.json
+      - run:
+          name: Deploy to Firebase
+          command: GOOGLE_APPLICATION_CREDENTIALS="$HOME"/firebaseAccountKey.json firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --release-notes "Notes here"
+
+#      - run:
+#          name: App distrubute to firebase
+#          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes-file "/home/circleci/code/release-notes.txt" --testers "your-email@email.com"
       - slack/notify:
           mentions: 'here'
           message: New version of Android is build successfully, check your gmail for invitation to check it out.
