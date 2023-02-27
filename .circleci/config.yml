@@ -17,15 +17,15 @@ jobs:
       - checkout
       - android/accept-licenses
       - android/restore-build-cache
-#      - run:
-#          name: Linting
-#          command: ./gradlew lint
-#      - run:
-#          name: Units tests
-#          command: ./gradlew test
-#      - run:
-#          name: Build Adroid applicaiton
-#          command: ./gradlew clean assembleDebug
+      - run:
+          name: Linting
+          command: ./gradlew lint
+      - run:
+          name: Units tests
+          command: ./gradlew test
+      - run:
+          name: Build Adroid applicaiton
+          command: ./gradlew clean assembleDebug
       - android/save-build-cache
       - run:
           name: Install Firebase CLI
@@ -35,9 +35,9 @@ jobs:
           command: |
             echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "gcloud.json"
 
-      - run:
-          name: Create env
-          command: printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
+#      - run:
+#          name: Create env
+#          command: printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
 #            export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
 
 
