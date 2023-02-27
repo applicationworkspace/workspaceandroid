@@ -31,7 +31,7 @@ jobs:
           command: curl -sL firebase.tools | bash
       - run:
           name: Create Service Account key JSON
-          command: echo $SERVICE_ACCOUNT_KEY > "${HOME}/gcloud.json"
+          command: echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "${HOME}/gcloud.json"
 
       - run:
           name: Create env
