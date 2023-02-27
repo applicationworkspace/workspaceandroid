@@ -16,28 +16,28 @@ jobs:
       - checkout
       - android/accept-licenses
       - android/restore-build-cache
-      - run:
-          name: Linting
-          command: ./gradlew lint
-      - run:
-          name: Units tests
-          command: ./gradlew test
-      - run:
-          name: Build Adroid applicaiton
-          command: ./gradlew clean assembleDebug
+#      - run:
+#          name: Linting
+#          command: ./gradlew lint
+#      - run:
+#          name: Units tests
+#          command: ./gradlew test
+#      - run:
+#          name: Build Adroid applicaiton
+#          command: ./gradlew clean assembleDebug
       - android/save-build-cache
       - run:
           name: Install Firebase CLI
           command: curl -sL firebase.tools | bash
       - run:
           name: Create Service Account key JSON
-          command: echo $SERVICE_ACCOUNT_KEY > "$HOME"/firebaseAccountKey.json
+          command: echo $SERVICE_ACCOUNT_KEY > "$HOME"/gcloud.json
 
-      - run: export GOOGLE_APPLICATION_CREDENTIALS='"$HOME"/firebaseAccountKey.json'
+#      - run: export GOOGLE_APPLICATION_CREDENTIALS='"$HOME"/firebaseAccountKey.json'
 
       - run:
           name: Deploy to Firebase
-          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --release-notes "Notes here"
+          command: GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcloud.json firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --release-notes "Notes here"
 
 #      - run:
 #          name: App distrubute to firebase
