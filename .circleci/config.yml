@@ -1,75 +1,12 @@
 version: 2.1
-#jobs:
-#  build:
-#    docker:
-#      - image: alvrme/alpine-android:android-30
 orbs:
-  android: circleci/android@2.2.0
-  slack: circleci/slack@3.4.2
+  android: circleci/android@2.0
 jobs:
-#  tests:
-#    working_directory: ~/code
-#    executor: android/android
-#    environment:
-#      JVM_OPTS: -Xmx2048m
-#      GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
-#    steps:
-#      - checkout
-#      - android/accept-licenses
-#      - android/restore-build-cache
-#      - run:
-#          name: Linting
-#          command: ./gradlew lint
-#      - run:
-#          name: Units tests
-#          command: ./gradlew test
-#      - run:
-#          name: Build Android application
-#          command: ./gradlew clean assembleDebug
-#      - android/save-build-cache
-#      - run:
-#          name: Install Firebase CLI
-#          command: curl -sL firebase.tools | bash
-#      - run:
-#          name: Create Service Account key JSON
-#          command: |
-#            echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "gcloud.json"
-#
-##      - run:
-##          name: Create env
-##          command: printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
-##            export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
-#
-#
-#      - run:
-#          name: Deploy to Firebase
-##          command: GOOGLE_APPLICATION_CREDENTIALS="$HOME"/gcloud.json firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --release-notes "Notes here"
-#          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "Notes here"
-##      - run:
-##          name: App distrubute to firebase
-##          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk  --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes-file "/home/circleci/code/release-notes.txt" --testers "your-email@email.com"
-#      - slack/notify:
-#          mentions: 'here'
-#          message: New version of Android is build successfully, check your gmail for invitation to check it out.
-#          webhook: ${SLACK_WEBHOOK}
-#      - slack/status:
-#          fail_only: true
-#          mentions: 'here'
-#          failure_message: 'Build failed'
-#          webhook: ${SLACK_WEBHOOK}
-
-
-  #          restore build cache, executor
-  lint:
-    executor: android/android
-    steps:
-      - checkout
-      - android/restore-gradle-cache
-      - run: ./gradlew lintDebug
-      - android/save-gradle-cache
-
-  unit_test:
-    executor: android/android
+  unit-test:
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -77,15 +14,73 @@ jobs:
       - android/save-gradle-cache
       - store_test_results:
           path: ./app/build/test-results/testDebugUnitTest
+
+  lint:
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    steps:
       - run:
-          name: echo checkout step
-          command: echo "Checkout step"
+          name: Lint step
+          command: echo "Lint"
+
+  build:
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    steps:
+      - run:
+          name: Build step
+          command: echo "Build"
+
+  deploy-firebase:
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    steps:
+      - run: echo "Deploy to firebase"
+
+  build-release:
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    steps:
+      - run: echo "Build release apk"
 
 workflows:
-  android_workflow:
+  build:
     jobs:
-      - lint
-      - unit_test:
+      - unit-test
+      - lint:
           filters:
             branches:
-              ignore: main # regular commits
+              only:
+                - main
+
+  build-and-distribute:
+    jobs:
+      - unit-test
+      - lint
+      - deploy-firebase:
+          requires:
+            - unit-test
+          filters:
+            branches:
+              only:
+                - develop
+
+  build-release-artifact:
+    jobs:
+      - unit-test
+      - lint
+      - build-release:
+          requires:
+            - unit-test
+          filters:
+            branches:
+              only:
+                - /release-.*/
