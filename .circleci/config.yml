@@ -2,6 +2,17 @@ version: 2.1
 orbs:
   android: circleci/android@2.0
 jobs:
+
+  build:
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    steps:
+      - run:
+          name: Build step
+          command: echo "Build"
+
   unit-test:
     executor:
       name: android/android-machine
@@ -28,16 +39,6 @@ jobs:
           name: Lint step
           command: echo "Lint"
 
-  build:
-    executor:
-      name: android/android-machine
-      resource-class: large
-      tag: 2021.10.1
-    steps:
-      - run:
-          name: Build step
-          command: echo "Build"
-
   deploy-firebase:
     executor:
       name: android/android-machine
@@ -55,7 +56,7 @@ jobs:
       - run: echo "Build release apk"
 
 workflows:
-  test-build:
+  android_workflow:
     jobs:
       - build
       - unit-test
