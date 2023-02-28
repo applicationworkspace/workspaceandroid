@@ -4,7 +4,7 @@ version: 2.1
 #    docker:
 #      - image: alvrme/alpine-android:android-30
 orbs:
-  android: circleci/android@0.2.1
+  android: circleci/android@2.2.0
   slack: circleci/slack@3.4.2
 jobs:
 #  tests:
@@ -58,6 +58,8 @@ jobs:
 #          failure_message: 'Build failed'
 #          webhook: ${SLACK_WEBHOOK}
 
+
+  #          restore build cache
   lint:
     executor:
       name: android/android-docker
