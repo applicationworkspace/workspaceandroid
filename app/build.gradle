@@ -14,9 +14,9 @@ android {
         applicationId "com.workspaceandroid"
         minSdk 28
         targetSdk 33
-        versionCode getAppVersionCode()
+//        versionCode getAppVersionCode()
         versionCode getBuildVersion() as int
-//        versionName getAppVersionName()
+        versionName getAppVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
