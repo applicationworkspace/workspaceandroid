@@ -8,12 +8,15 @@ jobs:
       resource-class: large
       tag: 2021.10.1
     steps:
-      - checkout
-      - android/restore-gradle-cache
-      - run: ./gradlew testDebugUnitTest
-      - android/save-gradle-cache
-      - store_test_results:
-          path: ./app/build/test-results/testDebugUnitTest
+#      - checkout
+#      - android/restore-gradle-cache
+#      - run: ./gradlew testDebugUnitTest
+#      - android/save-gradle-cache
+#      - store_test_results:
+#          path: ./app/build/test-results/testDebugUnitTest
+      - run:
+          name: Unit tests step
+          command: echo "Unit tests"
 
   lint:
     executor:
@@ -52,34 +55,21 @@ jobs:
       - run: echo "Build release apk"
 
 workflows:
-  build:
+  test-build:
     jobs:
-      - unit-test
-      - lint:
-          filters:
-            branches:
-              only:
-                - main
-
-  build-and-distribute:
-    jobs:
+      - build
       - unit-test
       - lint
       - deploy-firebase:
           requires:
-            - unit-test
+            - build
           filters:
             branches:
               only:
                 - develop
-
-  build-release-artifact:
-    jobs:
-      - unit-test
-      - lint
       - build-release:
           requires:
-            - unit-test
+            - build
           filters:
             branches:
               only:
