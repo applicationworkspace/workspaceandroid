@@ -59,10 +59,9 @@ jobs:
 #          webhook: ${SLACK_WEBHOOK}
 
 
-  #          restore build cache
+  #          restore build cache, executor
   lint:
-    executor:
-      name: android/android-docker
+    executor: android/android
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -70,8 +69,7 @@ jobs:
       - android/save-gradle-cache
 
   unit_test:
-    executor:
-      name: android/android-docker
+    executor: android/android
     steps:
       - checkout
       - android/restore-gradle-cache
