@@ -36,7 +36,7 @@
     <string name="auth_email_wrong">Use correct Email format</string>
 
 <!--    Collection tab -->
-    <string name="collection_title">Collection</string>
+    <string name="collection_title">My Collection</string>
     <string name="collection_overview">Overview</string>
     <string name="collection_definition">Definition</string>
     <string name="collection_examples">Examples</string>
