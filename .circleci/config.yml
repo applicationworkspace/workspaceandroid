@@ -10,8 +10,11 @@ jobs:
       resource-class: large
       tag: 2021.10.1
     steps:
+      - checkout
+      - android/restore-gradle-cache
+      - android/restore-build-cache
       - run:
-          name: Build Android application
+          name: Assemble debug build
           command: ./gradlew clean assembleDebug
       - slack/notify:
           event: fail
@@ -91,6 +94,8 @@ jobs:
       tag: 2021.10.1
     steps:
       - run: echo "Build release apk"
+#               - store_artifacts:
+#               path: app/build/outputs/apk/release
 
 workflows:
   android_workflow:
