@@ -3,13 +3,6 @@ orbs:
   android: circleci/android@2.0
   slack: circleci/slack@4.12.1
 
-#commands:
-#  notify_slack_error:
-#    steps:
-#      - slack/notify:
-#          event: fail
-#          template: basic_fail_1
-
 jobs:
   build:
     executor:
@@ -18,8 +11,11 @@ jobs:
       tag: 2021.10.1
     steps:
       - run:
-          name: Build step
-          command: echo "Build"
+          name: Build Android application
+          command: ./gradlew clean assembleDebug
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   unit-test:
     executor:
