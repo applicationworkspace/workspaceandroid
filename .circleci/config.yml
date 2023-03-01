@@ -126,6 +126,8 @@ workflows:
               only:
                 - /release-.*/
       - notify-distribution-build:
+          context: slack-secrets
           requires:
             - deploy-firebase
       - notify-fail
+          context: slack-secrets
