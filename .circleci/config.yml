@@ -4,6 +4,23 @@ orbs:
   slack: circleci/slack@4.12.1
 
 jobs:
+  build:
+    working_directory: ~/repo
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    steps:
+      - checkout
+      - android/restore-gradle-cache
+      - android/restore-build-cache
+      - run:
+          name: Assemble debug build
+          command: ./gradlew clean assembleDebug
+      - android/save-build-cache
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   unit-test:
     executor:
@@ -58,16 +75,6 @@ jobs:
       JVM_OPTS: -Xmx2048m
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
     steps:
-      - checkout
-      - android/restore-gradle-cache
-      - android/restore-build-cache
-      - run:
-          name: Assemble debug build
-          command: ./gradlew clean assembleDebug
-      - android/save-build-cache
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
       - run:
           name: Install Firebase CLI
           command: curl -sL firebase.tools | bash
@@ -134,9 +141,12 @@ jobs:
 workflows:
   android_workflow:
     jobs:
+      - build
       - unit-test
       - lint
       - deploy-firebase:
+          requires:
+            - build
           filters:
             branches:
               only:
