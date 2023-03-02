@@ -73,7 +73,6 @@ jobs:
     environment:
       JVM_OPTS: -Xmx2048m
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
-        echo "export COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
     steps:
       - run:
           name: Install Firebase CLI
