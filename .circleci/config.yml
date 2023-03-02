@@ -5,7 +5,7 @@ orbs:
 
 jobs:
   build:
-    working_directory: ~/repo
+    working_directory: ~/repo/outputs
     executor:
       name: android/android-machine
       resource-class: large
@@ -20,7 +20,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - app/build/outputs/apk/*/*/
+            - outputs/app/build/outputs/apk/*/*/
       - run:
           command: |
             ls -l app/build/outputs/apk/*/*/
@@ -31,12 +31,12 @@ jobs:
           event: fail
           template: basic_fail_1
 
-  unit-test:
-    executor:
-      name: android/android-machine
-      resource-class: large
-      tag: 2021.10.1
-    steps:
+#  unit-test:
+#    executor:
+#      name: android/android-machine
+#      resource-class: large
+#      tag: 2021.10.1
+#    steps:
 #      - checkout
 #      - android/restore-gradle-cache
 #      - android/run-tests:
@@ -72,13 +72,13 @@ jobs:
 #      - store_artifacts:
 #          path: test-results
 #          destination: reports/
-
-  lint:
-    executor:
-      name: android/android-machine
-      resource-class: large
-      tag: 2021.10.1
-    steps:
+#
+#  lint:
+#    executor:
+#      name: android/android-machine
+#      resource-class: large
+#      tag: 2021.10.1
+#    steps:
 #      - checkout
 #      - android/restore-gradle-cache
 #      - run:
@@ -120,7 +120,7 @@ jobs:
       - run:
           name: Deploy to Firebase
 #          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_DESC" --groups "app-testers"
-          command: firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_DESC" --groups "app-testers"
+          command: firebase appdistribution:distribute outputs/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_DESC" --groups "app-testers"
 
       - run:
           name: Get commit message
@@ -174,8 +174,8 @@ workflows:
   android_workflow:
     jobs:
       - build
-      - unit-test
-      - lint
+#      - unit-test
+#      - lint
       - deploy-firebase:
           requires:
             - build
