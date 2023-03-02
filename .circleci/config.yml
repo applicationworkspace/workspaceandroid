@@ -55,11 +55,14 @@ jobs:
       resource-class: large
       tag: 2021.10.1
     steps:
+      - checkout
+      - android/restore-gradle-cache
       - run:
           name: Linting
           command: ./gradlew lint
       - store_artifacts:
           path: app/build/reports
+      - android/save-gradle-cache
 
   deploy-firebase:
     executor:
