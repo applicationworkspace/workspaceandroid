@@ -14,9 +14,9 @@ android {
         applicationId "com.workspaceandroid"
         minSdk 28
         targetSdk 33
-//        versionCode getAppVersionCode()
-        versionCode getBuildVersion() as int
-        versionName getAppVersionName()
+        versionCode calculateVersionCode()
+//        versionCode getBuildVersion() as int
+        versionName calculateVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -51,20 +51,10 @@ android {
 
     // ci artifact
     task printVersionInformation {
-        println "v" + getAppVersionName()
+        println "v" + calculateVersionName()
+        println "code:" + calculateVersionCode() //TODO remove
     }
     buildToolsVersion '33.0.1'
-}
-
-// Circle ci BUILD_NUM
-static def getBuildVersion() {
-    def version = 32
-    def buildNumber = System.getenv("CIRCLE_BUILD_NUM")
-    if (buildNumber != null) {
-        version += buildNumber as int
-    }
-    println("VersionCode: " + version)
-    return version
 }
 
 dependencies {
