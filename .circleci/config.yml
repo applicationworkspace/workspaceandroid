@@ -4,22 +4,6 @@ orbs:
   slack: circleci/slack@4.12.1
 
 jobs:
-  build:
-    executor:
-      name: android/android-machine
-      resource-class: large
-      tag: 2021.10.1
-    steps:
-      - checkout
-      - android/restore-gradle-cache
-      - android/restore-build-cache
-      - run:
-          name: Assemble debug build
-          command: ./gradlew clean assembleDebug
-      - android/save-build-cache
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
 
   unit-test:
     executor:
@@ -74,6 +58,16 @@ jobs:
       JVM_OPTS: -Xmx2048m
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
     steps:
+      - checkout
+      - android/restore-gradle-cache
+      - android/restore-build-cache
+      - run:
+          name: Assemble debug build
+          command: ./gradlew clean assembleDebug
+      - android/save-build-cache
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
       - run:
           name: Install Firebase CLI
           command: curl -sL firebase.tools | bash
@@ -91,10 +85,10 @@ jobs:
 
       - run:
           name: Get commit message
-          command: echo 'export GIT_COMMIT_DESC="${bar_var}"' >> $BASH_ENV
+          command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
 
       - slack/notify:
-          event: always
+          event: pass
           custom: |
               {
                 "blocks": [
@@ -121,7 +115,7 @@ jobs:
                     "type": "section",
                     "text": {
                       "type": "mrkdwn",
-                      "text": "*Details:*\nNew build (App distribution) available $GIT_COMMIT_DESC"
+                      "text": "*Details:*\nNew build (App distribution) available $GIT_COMMIT_MESSAGE"
                     }
                   }
                 ]
@@ -140,12 +134,9 @@ jobs:
 workflows:
   android_workflow:
     jobs:
-      - build
       - unit-test
       - lint
       - deploy-firebase:
-          requires:
-            - build
           filters:
             branches:
               only:
