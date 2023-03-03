@@ -3,13 +3,18 @@ orbs:
   android: circleci/android@2.0
   slack: circleci/slack@4.12.1
 
+executors:
+  my-executor:
+#    name: android/android-machine
+#    resource-class: large
+#    tag: 2021.10.1
+    docker:
+      - image: circleci/android:api-28-alpha
+    working_directory: ~/repo/outputs
+
 jobs:
   build:
-    working_directory: ~/repo/outputs
-    executor:
-      name: android/android-machine
-      resource-class: large
-      tag: 2021.10.1
+    executor: my-executor
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -23,7 +28,8 @@ jobs:
             - outputs/app/build/outputs/apk/*/*/
       - run:
           command: |
-            ls -l app/build/outputs/apk/*/*/
+#            ls -l app/build/outputs/apk/*/*/
+            ls -l repo/outputs
 
       - android/save-build-cache
       - android/save-gradle-cache
@@ -31,69 +37,59 @@ jobs:
           event: fail
           template: basic_fail_1
 
-#  unit-test:
-#    executor:
-#      name: android/android-machine
-#      resource-class: large
-#      tag: 2021.10.1
-#    steps:
-#      - checkout
-#      - android/restore-gradle-cache
-#      - android/run-tests:
-#          test-command: ./gradlew testDebug
-#      - android/save-gradle-cache
-##      - run:
-##          name: Save test results (html page, see Artifacts)
-##          command: |
-##            mkdir -p test-results/html/
-##            find . -type d -regex ".*/*reports/tests" -exec cp -avr {} test-results/html/ \;
-##          when: always
-##      - run:
-##          name: Save test results (xml results, see Tests)
-##          command: |
-##            mkdir -p test-results/xml/
-##            find . -type f -regex ".*/*test-results/.*xml" -exec cp {} test-results/xml/ \;
-##          when: always
-##      # Make test results show up in the CircleCI build dashboard
-##      - run:
-##          name: Save test results
-##          command: |
-##            mkdir -p ~/junit/
-##            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
-##          when: always
-##      - store_test_results:
-##          path: ~/junit
-##
-##      - store_artifacts:
-##          path: ~/junit
-#
-#      - store_test_results:
-#          path: test-results
-#      - store_artifacts:
-#          path: test-results
-#          destination: reports/
-#
-#  lint:
-#    executor:
-#      name: android/android-machine
-#      resource-class: large
-#      tag: 2021.10.1
-#    steps:
-#      - checkout
-#      - android/restore-gradle-cache
+  unit-test:
+    executor: my-executor
+    steps:
+      - checkout
+      - android/restore-gradle-cache
+      - android/run-tests:
+          test-command: ./gradlew testDebug
+      - android/save-gradle-cache
 #      - run:
-#          name: Linting
-#          command: ./gradlew lint
+#          name: Save test results (html page, see Artifacts)
+#          command: |
+#            mkdir -p test-results/html/
+#            find . -type d -regex ".*/*reports/tests" -exec cp -avr {} test-results/html/ \;
+#          when: always
+#      - run:
+#          name: Save test results (xml results, see Tests)
+#          command: |
+#            mkdir -p test-results/xml/
+#            find . -type f -regex ".*/*test-results/.*xml" -exec cp {} test-results/xml/ \;
+#          when: always
+#      # Make test results show up in the CircleCI build dashboard
+#      - run:
+#          name: Save test results
+#          command: |
+#            mkdir -p ~/junit/
+#            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
+#          when: always
+#      - store_test_results:
+#          path: ~/junit
+#
 #      - store_artifacts:
-#          path: app/build/reports
-#      - android/save-gradle-cache
+#          path: ~/junit
+
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: reports/
+
+  lint:
+    executor: my-executor
+    steps:
+      - checkout
+      - android/restore-gradle-cache
+      - run:
+          name: Linting
+          command: ./gradlew lint
+      - store_artifacts:
+          path: app/build/reports
+      - android/save-gradle-cache
 
   deploy-firebase:
-    working_directory: ~/code
-    executor:
-      name: android/android-machine
-      resource-class: large
-      tag: 2021.10.1
+    executor: my-executor
     environment:
       JVM_OPTS: -Xmx2048m
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
