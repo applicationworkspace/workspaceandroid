@@ -27,7 +27,7 @@ jobs:
           name: Assemble debug build
           command: ./gradlew clean assembleDebug
       - persist_to_workspace:
-          root: repo
+          root: ~/repo
           paths:
             - outputs/app/build/outputs/apk/*/*/
       - run:
