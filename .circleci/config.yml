@@ -18,27 +18,33 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: ~/repo/outputs
+    working_directory: /tmp
     steps:
-      - checkout
-      - android/restore-gradle-cache
-      - android/restore-build-cache
-      - run:
-          name: Assemble debug build
-          command: ./gradlew clean assembleDebug
+      - run: mkdir -p workspace
+      - run: echo "Hello, world!" > workspace/echo-output
       - persist_to_workspace:
-          root: ~/repo
+          root: workspace
           paths:
-            - outputs/app/build/outputs/apk/*/*/
-      - run:
-          command: |
-            ls -l repo
-
-      - android/save-build-cache
-      - android/save-gradle-cache
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
+            - echo-output
+#      - checkout
+#      - android/restore-gradle-cache
+#      - android/restore-build-cache
+#      - run:
+#          name: Assemble debug build
+#          command: ./gradlew clean assembleDebug
+#      - persist_to_workspace:
+#          root: ~/repo
+#          paths:
+#            - outputs/app/build/outputs/apk/*/*/
+#      - run:
+#          command: |
+#            ls -l repo
+#
+#      - android/save-build-cache
+#      - android/save-gradle-cache
+#      - slack/notify:
+#          event: fail
+#          template: basic_fail_1
 
   unit-test:
     executor:
@@ -110,66 +116,75 @@ jobs:
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
     steps:
       - attach_workspace:
-          at: ./
-      - android/restore-gradle-cache
-      - android/restore-build-cache
+          at: /tmp/workspace
 
-      - run:
-          command: |
-            ls -lR .
-      - run:
-          name: Install Firebase CLI
-          command: curl -sL firebase.tools | bash
-      - run:
-          name: Create Service Account key JSON
-          command: |
-            echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "gcloud.json"
-      #            - run:
-      #                name: Create env
-      #                command: printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
-      #                  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
-      - run:
-          name: Deploy to Firebase
-#          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_DESC" --groups "app-testers"
-          command: firebase appdistribution:distribute outputs/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"
-
-      - run:
-          name: Get commit message
-          command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
-
-      - slack/notify:
-          event: pass
-          custom: |
-              {
-                "blocks": [
-                  {
-                    "type": "header",
-                    "text": {
-                      "type": "plain_text",
-                      "text": "CI/CD workflow (CircleCI)"
-                    }
-                  },
-                  {
-                    "type": "section",
-                    "fields": [
-                      {
-                        "type": "mrkdwn",
-                        "text": "*Type:*\nNew QA build"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "divider"
-                  },
-                  {
-                    "type": "section",
-                    "text": {
-                      "type": "mrkdwn",
-                      "text": "*Details:*\nNew build (App distribution) available $GIT_COMMIT_MESSAGE"
-                    }
-                  }
-                ]
-              }
+      - run: |
+          if [[ `cat /tmp/workspace/echo-output` == "Hello, world!" ]]; then
+            echo "It worked!";
+          else
+            echo "Nope!"; exit 1
+          fi
+#      - attach_workspace:
+#          at: ./
+#      - android/restore-gradle-cache
+#      - android/restore-build-cache
+#
+#      - run:
+#          command: |
+#            ls -lR .
+#      - run:
+#          name: Install Firebase CLI
+#          command: curl -sL firebase.tools | bash
+#      - run:
+#          name: Create Service Account key JSON
+#          command: |
+#            echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "gcloud.json"
+#      #            - run:
+#      #                name: Create env
+#      #                command: printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
+#      #                  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
+#      - run:
+#          name: Deploy to Firebase
+##          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_DESC" --groups "app-testers"
+#          command: firebase appdistribution:distribute outputs/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"
+#
+#      - run:
+#          name: Get commit message
+#          command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
+#
+#      - slack/notify:
+#          event: pass
+#          custom: |
+#              {
+#                "blocks": [
+#                  {
+#                    "type": "header",
+#                    "text": {
+#                      "type": "plain_text",
+#                      "text": "CI/CD workflow (CircleCI)"
+#                    }
+#                  },
+#                  {
+#                    "type": "section",
+#                    "fields": [
+#                      {
+#                        "type": "mrkdwn",
+#                        "text": "*Type:*\nNew QA build"
+#                      }
+#                    ]
+#                  },
+#                  {
+#                    "type": "divider"
+#                  },
+#                  {
+#                    "type": "section",
+#                    "text": {
+#                      "type": "mrkdwn",
+#                      "text": "*Details:*\nNew build (App distribution) available $GIT_COMMIT_MESSAGE"
+#                    }
+#                  }
+#                ]
+#              }
 
   build-release:
     executor:
