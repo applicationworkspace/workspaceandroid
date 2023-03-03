@@ -27,6 +27,9 @@ jobs:
       - run:
           command: |
             ls -l
+      - run:
+          command: |
+            pwd
       - checkout:
           path: ~/repo
       - run:
