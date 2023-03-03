@@ -26,6 +26,9 @@ jobs:
           root: workspace
           paths:
             - echo-output
+        - run:
+            command: |
+              ls -l
 #      - checkout
 #      - android/restore-gradle-cache
 #      - android/restore-build-cache
