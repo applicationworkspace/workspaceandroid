@@ -18,7 +18,7 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: /tmp
+    working_directory: ~/repo/outputs
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -27,12 +27,12 @@ jobs:
           name: Assemble debug build
           command: ./gradlew clean assembleDebug
       - persist_to_workspace:
-          root: outputs
+          root: repo
           paths:
-            - app/build/outputs/apk/*/*/
+            - outputs/app/build/outputs/apk/*/*/
       - run:
           command: |
-            ls -l tmp/outputs
+            ls -l repo
 
       - android/save-build-cache
       - android/save-gradle-cache
@@ -110,7 +110,7 @@ jobs:
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
     steps:
       - attach_workspace:
-          at: /tmp/outputs
+          at: ./
       - android/restore-gradle-cache
       - android/restore-build-cache
 
