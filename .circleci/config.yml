@@ -18,36 +18,35 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: /tmp
+    working_directory: ~/repo/workspaceandroid
     steps:
-      - run: mkdir -p workspace
-      - run: echo "Hello, world!" > workspace/echo-output
+      - checkout
+      - checkout:
+          path: ~/repo
+      - android/restore-gradle-cache
+      - android/restore-build-cache
+      - run:
+          name: Assemble debug build
+          command: ./gradlew clean assembleDebug
+
+      - android/save-build-cache
+      - android/save-gradle-cache
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
       - persist_to_workspace:
-          root: workspace
+          root: ~/repo
           paths:
-            - echo-output
+            - workspaceandroid/app/build/outputs/apk/*/*/
       - run:
           command: |
             ls -l
-#      - checkout
-#      - android/restore-gradle-cache
-#      - android/restore-build-cache
-#      - run:
-#          name: Assemble debug build
-#          command: ./gradlew clean assembleDebug
-#      - persist_to_workspace:
-#          root: ~/repo
-#          paths:
-#            - outputs/app/build/outputs/apk/*/*/
-#      - run:
-#          command: |
-#            ls -l repo
-#
-#      - android/save-build-cache
-#      - android/save-gradle-cache
-#      - slack/notify:
-#          event: fail
-#          template: basic_fail_1
+      - run:
+          command: |
+            ls -l workspaceandroid
+      - run:
+          command: |
+            ls -l app/build/outputs/apk/*/*/
 
   unit-test:
     executor:
@@ -119,22 +118,15 @@ jobs:
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: ./
 
-      - run: |
-          if [[ `cat /tmp/workspace/echo-output` == "Hello, world!" ]]; then
-            echo "It worked!";
-          else
-            echo "Nope!"; exit 1
-          fi
-#      - attach_workspace:
-#          at: ./
+      - run:
+          command: |
+            ls -lR .
+
 #      - android/restore-gradle-cache
 #      - android/restore-build-cache
-#
-#      - run:
-#          command: |
-#            ls -lR .
+
 #      - run:
 #          name: Install Firebase CLI
 #          command: curl -sL firebase.tools | bash
