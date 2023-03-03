@@ -18,7 +18,7 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: ~/repo/workspaceandroid
+    working_directory: ~/repo/workspace
     steps:
       - run:
           command: |
@@ -30,11 +30,8 @@ jobs:
       - run:
           command: |
             pwd
-      - checkout:
-          path: ~/repo
-      - run:
-          command: |
-            ls -l
+#      - checkout:
+#          path: ~/repo
       - android/restore-gradle-cache
       - android/restore-build-cache
       - run:
@@ -47,15 +44,12 @@ jobs:
           event: fail
           template: basic_fail_1
       - persist_to_workspace:
-          root: ~/repo
+          root: ~/workspace
           paths:
-            - workspaceandroid/app/build/outputs/apk/*/*/
+            - app/build/outputs/apk/*/*/
       - run:
           command: |
             ls -l
-      - run:
-          command: |
-            ls -l workspaceandroid
       - run:
           command: |
             ls -l app/build/outputs/apk/*/*/
@@ -65,7 +59,7 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: ~/repo/outputs
+    working_directory: ~/repo/workspace
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -108,7 +102,7 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: ~/repo/outputs
+    working_directory: ~/repo/workspace
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -124,7 +118,7 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: ~/repo/outputs
+    working_directory: ~/repo/workspace
     environment:
       JVM_OPTS: -Xmx2048m
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
@@ -134,7 +128,10 @@ jobs:
 
       - run:
           command: |
-            ls -lR .
+            ls -l
+      - run:
+          command: |
+            pwd
 
 #      - android/restore-gradle-cache
 #      - android/restore-build-cache
