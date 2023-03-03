@@ -44,7 +44,7 @@ jobs:
           event: fail
           template: basic_fail_1
       - persist_to_workspace:
-          root: ~/workspace
+          root: ~/repo/workspace
           paths:
             - app/build/outputs/apk/*/*/
       - run:
