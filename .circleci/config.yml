@@ -20,9 +20,18 @@ jobs:
       tag: 2021.10.1
     working_directory: ~/repo/workspaceandroid
     steps:
+      - run:
+          command: |
+            ls -l
       - checkout
+      - run:
+          command: |
+            ls -l
       - checkout:
           path: ~/repo
+      - run:
+          command: |
+            ls -l
       - android/restore-gradle-cache
       - android/restore-build-cache
       - run:
