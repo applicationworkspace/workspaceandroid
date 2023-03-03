@@ -3,18 +3,22 @@ orbs:
   android: circleci/android@2.0
   slack: circleci/slack@4.12.1
 
-executors:
-  my-executor:
-#    name: android/android-machine
-#    resource-class: large
-#    tag: 2021.10.1
-    docker:
-      - image: circleci/android:api-28-alpha
-    working_directory: ~/repo/outputs
+#executors:
+#  my-executor:
+##    name: android/android-machine
+##    resource-class: large
+##    tag: 2021.10.1
+#    working_directory: ~/repo/outputs
+##    docker:
+##      - image: circleci/android:api-28-alpha
 
 jobs:
   build:
-    executor: my-executor
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    working_directory: ~/repo/outputs
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -37,7 +41,11 @@ jobs:
           template: basic_fail_1
 
   unit-test:
-    executor: my-executor
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    working_directory: ~/repo/outputs
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -76,7 +84,11 @@ jobs:
           destination: reports/
 
   lint:
-    executor: my-executor
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    working_directory: ~/repo/outputs
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -88,7 +100,11 @@ jobs:
       - android/save-gradle-cache
 
   deploy-firebase:
-    executor: my-executor
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2021.10.1
+    working_directory: ~/repo/outputs
     environment:
       JVM_OPTS: -Xmx2048m
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
@@ -115,7 +131,7 @@ jobs:
       - run:
           name: Deploy to Firebase
 #          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_DESC" --groups "app-testers"
-          command: firebase appdistribution:distribute outputs/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_DESC" --groups "app-testers"
+          command: firebase appdistribution:distribute outputs/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"
 
       - run:
           name: Get commit message
