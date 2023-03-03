@@ -28,7 +28,6 @@ jobs:
             - outputs/app/build/outputs/apk/*/*/
       - run:
           command: |
-#            ls -l app/build/outputs/apk/*/*/
             ls -l repo/outputs
 
       - android/save-build-cache
