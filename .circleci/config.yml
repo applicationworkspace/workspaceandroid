@@ -134,6 +134,18 @@ jobs:
           command: |
             pwd
 
+      - run:
+          command: |
+            cd workspace/app/build/outputs/apk/debug/
+      - run:
+          command: |
+            ls -l
+
+      - run:
+          command: |
+            pwd
+      
+
 #      - android/restore-gradle-cache
 #      - android/restore-build-cache
 
