@@ -23,6 +23,7 @@ jobs:
       - run:
           command: |
             ls -l
+#      - run: mkdir -p workspace
       - checkout
       - run:
           command: |
@@ -44,15 +45,15 @@ jobs:
           event: fail
           template: basic_fail_1
       - persist_to_workspace:
-          root: ~/repo/workspace
+          root: ~/repo
           paths:
-            - app/build/outputs/apk/*/*/
+            - workspace/app/build/outputs/apk/
       - run:
           command: |
             ls -l
       - run:
           command: |
-            ls -l app/build/outputs/apk/*/*/
+            ls -l workspace/app/build/outputs/apk
 
   unit-test:
     executor:
