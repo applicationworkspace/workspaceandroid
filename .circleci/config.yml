@@ -18,7 +18,7 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: ~/repo/workspace
+    working_directory: ~/repo
     steps:
       - run:
           command: |
@@ -47,7 +47,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths:
-            - workspace/app/build/outputs/apk/debug/
+            - app/build/outputs/apk/debug/
       - run:
           command: |
             ls -l
@@ -60,7 +60,7 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: ~/repo/workspace
+    working_directory: ~/repo
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -103,7 +103,7 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: ~/repo/workspace
+    working_directory: ~/repo
     steps:
       - checkout
       - android/restore-gradle-cache
@@ -119,7 +119,7 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2021.10.1
-    working_directory: ~/repo/workspace
+    working_directory: ~/repo
     environment:
       JVM_OPTS: -Xmx2048m
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
@@ -136,31 +136,35 @@ jobs:
 
       - run:
           command: |
-            if [ -d "/workspace/app/build/outputs/apk/debug" ] 
+            if [ -d "app/build/outputs/apk/debug" ] 
               then
-            echo "Directory /workspace/app/build/outputs/apk/debug exists."
+            echo "Directory app/build/outputs/apk/debug exists."
               else
-            echo "Error: Directory /workspace/app/build/outputs/apk/debug does not exists."
+            echo "Error: Directory app/build/outputs/apk/debug does not exists."
               fi
-      - run:
-          command: |
-            ls -l workspace
 
       - run:
           command: |
-            ls -l workspace/app
+            ls -l app
       - run:
           command: |
-            ls -l workspace/app/build
+            ls -l app/build
       - run:
           command: |
-            ls -l workspace/app/build/outputs
+            ls -l app/build/outputs
       - run:
           command: |
-            ls -l workspace/app/build/outputs/apk
+            ls -l app/build/outputs/apk
       - run:
           command: |
-            ls -l workspace/app/build/outputs/apk/debug
+            ls -l app/build/outputs/apk/debug
+      - run:
+          command: |
+            cd app/build/outputs/apk/debug
+
+      - run:
+          command: |
+            pwd
 
 #      - android/restore-gradle-cache
 #      - android/restore-build-cache
