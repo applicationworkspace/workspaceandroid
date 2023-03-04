@@ -146,6 +146,22 @@ jobs:
           command: |
             ls -l workspace
 
+      - run:
+          command: |
+            ls -l workspace/app
+      - run:
+          command: |
+            ls -l workspace/app/build
+      - run:
+          command: |
+            ls -l workspace/app/build/outputs
+      - run:
+          command: |
+            ls -l workspace/app/build/outputs/apk
+      - run:
+          command: |
+            ls -l workspace/app/build/outputs/apk/debug
+
 #      - android/restore-gradle-cache
 #      - android/restore-build-cache
 
