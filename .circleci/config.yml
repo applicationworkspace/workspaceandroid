@@ -136,15 +136,15 @@ jobs:
 
       - run:
           command: |
-            cd workspace/app/build/outputs/apk/debug/
+            if [ -d "/workspace/app/build/outputs/apk/debug" ] 
+              then
+            echo "Directory /workspace/app/build/outputs/apk/debug exists."
+              else
+            echo "Error: Directory /workspace/app/build/outputs/apk/debug does not exists."
+              fi
       - run:
           command: |
-            ls -l
-
-      - run:
-          command: |
-            pwd
-      
+            ls -l workspace
 
 #      - android/restore-gradle-cache
 #      - android/restore-build-cache
