@@ -39,7 +39,8 @@ class CollectionRepositoryTest {
         val phrasesResult = collectionRepository.fetchUserPhrases()
 
         //then
-        assertEquals(phrasesDomain, phrasesResult)
+//        assertEquals(phrasesDomain, phrasesResult)
+        assertEquals(true, false)
     }
 
 //    verify(dbSource).insertOrUpdatePhrase(DbDTO)
