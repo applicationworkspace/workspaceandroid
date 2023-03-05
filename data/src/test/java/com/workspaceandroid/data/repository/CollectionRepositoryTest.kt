@@ -3,8 +3,8 @@ package com.workspaceandroid.data.repository
 import com.workspaceandroid.data.api.source.IPhrasesNetSource
 import com.workspaceandroid.data.mappers.PhrasesNetMapper
 import com.workspaceandroid.data.repositories.CollectionRepository
-import com.workspaceandroid.data.repository.defaultTestModels.defaultPhraseModel
-import com.workspaceandroid.data.repository.defaultTestModels.defaultPhraseNetDTOModel
+import com.workspaceandroid.data.defaultTestModels.defaultPhraseModel
+import com.workspaceandroid.data.defaultTestModels.defaultPhraseNetDTOModel
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test

@@ -21,7 +21,10 @@ ext {
         return (major * 100 + minor) * 1000 + patch
     }
 
-    calculateVersionName = { "${appSetup.majorVersion}.${appSetup.minorVersion}.${appSetup.patchVersion}" }
+    calculateVersionName = {
+        def pipelineRunId = System.getenv("CIRCLE_BUILD_NUM") ?: 0
+        "${appSetup.majorVersion}.${appSetup.minorVersion}.${appSetup.patchVersion}-$pipelineRunId}"
+    }
 }
 
 //// Circle ci BUILD_NUM

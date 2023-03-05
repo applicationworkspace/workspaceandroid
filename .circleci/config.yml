@@ -20,19 +20,7 @@ jobs:
       tag: 2021.10.1
     working_directory: ~/repo
     steps:
-      - run:
-          command: |
-            ls -l
-#      - run: mkdir -p workspace
       - checkout
-      - run:
-          command: |
-            ls -l
-      - run:
-          command: |
-            pwd
-#      - checkout:
-#          path: ~/repo
       - android/restore-gradle-cache
       - android/restore-build-cache
       - run:
@@ -48,12 +36,6 @@ jobs:
           root: ~/repo
           paths:
             - app/build/outputs/apk/debug/
-      - run:
-          command: |
-            ls -l
-#      - run:
-#          command: |
-#            ls -l workspace/app/build/outputs/apk
 
   unit-test:
     executor:
@@ -65,38 +47,38 @@ jobs:
       - checkout
       - android/restore-gradle-cache
       - android/run-tests:
-          test-command: ./gradlew testDebug
+          test-command: ./gradlew test
       - android/save-gradle-cache
-#      - run:
-#          name: Save test results (html page, see Artifacts)
-#          command: |
-#            mkdir -p test-results/html/
-#            find . -type d -regex ".*/*reports/tests" -exec cp -avr {} test-results/html/ \;
-#          when: always
-#      - run:
-#          name: Save test results (xml results, see Tests)
-#          command: |
-#            mkdir -p test-results/xml/
-#            find . -type f -regex ".*/*test-results/.*xml" -exec cp {} test-results/xml/ \;
-#          when: always
-#      # Make test results show up in the CircleCI build dashboard
-#      - run:
-#          name: Save test results
-#          command: |
-#            mkdir -p ~/junit/
-#            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
-#          when: always
-#      - store_test_results:
-#          path: ~/junit
-#
-#      - store_artifacts:
-#          path: ~/junit
-
+      - run:
+          name: Save test results (html page, see Artifacts)
+          command: |
+            mkdir -p test-results/html/
+            find . -type d -regex ".*/*reports/tests" -exec cp -avr {} test-results/html/ \;
+          when: always
+      - run:
+          name: Save test results (xml results, see Tests)
+          command: |
+            mkdir -p test-results/xml/
+            find . -type f -regex ".*/*test-results/.*xml" -exec cp {} test-results/xml/ \;
+          when: always
+      # Make test results show up in the CircleCI build dashboard
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
+          when: always
       - store_test_results:
-          path: test-results
+          path: ~/junit
+
       - store_artifacts:
-          path: test-results
-          destination: reports/
+          path: ~/junit
+
+#      - store_test_results:
+#          path: /repo/test-results
+#      - store_artifacts:
+#          path: /repo/test-results
+#          destination: artifact-file
 
   lint:
     executor:
@@ -127,101 +109,61 @@ jobs:
       - attach_workspace:
           at: ./
 
-      - run:
-          command: |
-            ls -l
-      - run:
-          command: |
-            pwd
+      - android/restore-gradle-cache
+      - android/restore-build-cache
 
       - run:
-          command: |
-            if [ -d "app/build/outputs/apk/debug" ] 
-              then
-            echo "Directory app/build/outputs/apk/debug exists."
-              else
-            echo "Error: Directory app/build/outputs/apk/debug does not exists."
-              fi
+          name: Get commit message
+          command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
 
       - run:
-          command: |
-            ls -l app
+          name: Install Firebase CLI
+          command: curl -sL firebase.tools | bash
       - run:
+          name: Create Service Account key JSON
           command: |
-            ls -l app/build
+            echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "gcloud.json"
+      #            - run:
+      #                name: Create env
+      #                command: printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
+      #                  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
       - run:
-          command: |
-            ls -l app/build/outputs
-      - run:
-          command: |
-            ls -l app/build/outputs/apk
-      - run:
-          command: |
-            ls -l app/build/outputs/apk/debug
-      - run:
-          command: |
-            cd app/build/outputs/apk/debug
+          name: Deploy to Firebase
+          command: firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"
 
-      - run:
-          command: |
-            pwd
-
-#      - android/restore-gradle-cache
-#      - android/restore-build-cache
-
-#      - run:
-#          name: Install Firebase CLI
-#          command: curl -sL firebase.tools | bash
-#      - run:
-#          name: Create Service Account key JSON
-#          command: |
-#            echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "gcloud.json"
-#      #            - run:
-#      #                name: Create env
-#      #                command: printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
-#      #                  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
-#      - run:
-#          name: Deploy to Firebase
-##          command: firebase appdistribution:distribute /home/circleci/code/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_DESC" --groups "app-testers"
-#          command: firebase appdistribution:distribute outputs/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"
-#
-#      - run:
-#          name: Get commit message
-#          command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
-#
-#      - slack/notify:
-#          event: pass
-#          custom: |
-#              {
-#                "blocks": [
-#                  {
-#                    "type": "header",
-#                    "text": {
-#                      "type": "plain_text",
-#                      "text": "CI/CD workflow (CircleCI)"
-#                    }
-#                  },
-#                  {
-#                    "type": "section",
-#                    "fields": [
-#                      {
-#                        "type": "mrkdwn",
-#                        "text": "*Type:*\nNew QA build"
-#                      }
-#                    ]
-#                  },
-#                  {
-#                    "type": "divider"
-#                  },
-#                  {
-#                    "type": "section",
-#                    "text": {
-#                      "type": "mrkdwn",
-#                      "text": "*Details:*\nNew build (App distribution) available $GIT_COMMIT_MESSAGE"
-#                    }
-#                  }
-#                ]
-#              }
+      - slack/notify:
+          event: pass
+          custom: |
+              {
+                "blocks": [
+                  {
+                    "type": "header",
+                    "text": {
+                      "type": "plain_text",
+                      "text": "CI/CD workflow (CircleCI)"
+                    }
+                  },
+                  {
+                    "type": "section",
+                    "fields": [
+                      {
+                        "type": "mrkdwn",
+                        "text": "*Type:*\nNew QA build"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "divider"
+                  },
+                  {
+                    "type": "section",
+                    "text": {
+                      "type": "mrkdwn",
+                      "text": "*Details:*\nNew build (App distribution) available $GIT_COMMIT_MESSAGE"
+                    }
+                  }
+                ]
+              }
 
   build-release:
     executor:
@@ -237,8 +179,8 @@ workflows:
   android_workflow:
     jobs:
       - build
-#      - unit-test
-#      - lint
+      - unit-test
+      - lint
       - deploy-firebase:
           requires:
             - build

@@ -1,4 +1,4 @@
-package com.workspaceandroid.data.repository.defaultTestModels
+package com.workspaceandroid.data.defaultTestModels
 
 import com.workspaceandroid.data.dto.phrases.PhraseNetDTO
 import com.workspaceandroid.domain.models.phrase.Phrase
