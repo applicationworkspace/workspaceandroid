@@ -21,28 +21,21 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
+      - android/restore-gradle-cache
+      - android/restore-build-cache
       - run:
-          name: Get commit message
-          command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
-      - run:
-          name: Print message
-          command: echo "message= $GIT_COMMIT_MESSAGE"
-#      - checkout
-#      - android/restore-gradle-cache
-#      - android/restore-build-cache
-#      - run:
-#          name: Assemble debug build
-#          command: ./gradlew clean assembleDebug
-#
-#      - android/save-build-cache
-#      - android/save-gradle-cache
-#      - slack/notify:
-#          event: fail
-#          template: basic_fail_1
-#      - persist_to_workspace:
-#          root: ~/repo
-#          paths:
-#            - app/build/outputs/apk/debug/
+          name: Assemble debug build
+          command: ./gradlew clean assembleDebug
+
+      - android/save-build-cache
+      - android/save-gradle-cache
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - app/build/outputs/apk/debug/
 
   unit-test:
     executor:
@@ -115,7 +108,7 @@ jobs:
 
       - run:
           name: Get commit message
-          command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
+          command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=reference -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
 
       - run:
           name: Install Firebase CLI
@@ -160,7 +153,7 @@ jobs:
                     "type": "section",
                     "text": {
                       "type": "mrkdwn",
-                      "text": "*Details:*\nNew build (App distribution) available $GIT_COMMIT_MESSAGE"
+                      "text": "*Details:*\n${GIT_COMMIT_MESSAGE}"
                     }
                   }
                 ]
@@ -180,17 +173,17 @@ workflows:
   android_workflow:
     jobs:
       - build
-#      - unit-test
-#      - lint
-#      - deploy-firebase:
-#          requires:
-#            - build
-#          filters:
-#            branches:
-#              only:
-#                - develop
-#      - build-release:
-#          filters:
-#            branches:
-#              only:
-#                - /release-.*/
+      - unit-test
+      - lint
+      - deploy-firebase:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+      - build-release:
+          filters:
+            branches:
+              only:
+                - /release-.*/
