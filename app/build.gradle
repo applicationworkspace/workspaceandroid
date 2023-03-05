@@ -33,6 +33,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        android.applicationVariants.all { variant ->
+            variant.outputs.all {
+                outputFileName = "${provideOutputFileName(variant)}.apk"
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -56,9 +62,26 @@ android {
     // ci artifact
     task printVersionInformation {
         println "v" + calculateVersionName()
-        println "code:" + calculateVersionCode() //TODO remove
     }
     buildToolsVersion '33.0.1'
+}
+
+
+ext.provideOutputFileName = { variant ->
+//    def versionName = variant.versionName.minus("-$configuration.debugSuffix")
+    def versionName = variant.versionName
+    def versionCode = variant.versionCode
+//    def buildType = variant.name.minus("Flavor")
+    def buildType = variant.name
+    def suffix = "_" + new Date().format("yyyy.MM.dd'T'HH.mm")
+    return "${versionName}[${versionCode}]_${suffix}"
+
+//    outputFileName += "-v" + android.defaultConfig.versionName
+//    if (variant.buildType.name == "release") {
+//        outputFileName += ".apk"
+//    } else {
+//        outputFileName += "-SNAPSHOT.apk"
+//    }
 }
 
 dependencies {
