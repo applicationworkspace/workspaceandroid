@@ -20,6 +20,7 @@ jobs:
       tag: 2021.10.1
     working_directory: ~/repo
     steps:
+      - checkout
       - run:
           name: Get commit message
           command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
