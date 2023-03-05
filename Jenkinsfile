@@ -43,9 +43,9 @@ pipeline {
           branch 'develop'
        }
        steps {
-
+        echo "Uploading to app distribution"
        }
-        post {
+       post {
           success {
             // Notify if the upload succeeded
             withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
