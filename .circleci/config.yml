@@ -20,22 +20,28 @@ jobs:
       tag: 2021.10.1
     working_directory: ~/repo
     steps:
-      - checkout
-      - android/restore-gradle-cache
-      - android/restore-build-cache
       - run:
-          name: Assemble debug build
-          command: ./gradlew clean assembleDebug
-
-      - android/save-build-cache
-      - android/save-gradle-cache
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
-      - persist_to_workspace:
-          root: ~/repo
-          paths:
-            - app/build/outputs/apk/debug/
+          name: Get commit message
+          command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
+      - run:
+          name: Print message
+          command: echo "message= $GIT_COMMIT_MESSAGE"
+#      - checkout
+#      - android/restore-gradle-cache
+#      - android/restore-build-cache
+#      - run:
+#          name: Assemble debug build
+#          command: ./gradlew clean assembleDebug
+#
+#      - android/save-build-cache
+#      - android/save-gradle-cache
+#      - slack/notify:
+#          event: fail
+#          template: basic_fail_1
+#      - persist_to_workspace:
+#          root: ~/repo
+#          paths:
+#            - app/build/outputs/apk/debug/
 
   unit-test:
     executor:
@@ -73,12 +79,6 @@ jobs:
 
       - store_artifacts:
           path: ~/junit
-
-#      - store_test_results:
-#          path: /repo/test-results
-#      - store_artifacts:
-#          path: /repo/test-results
-#          destination: artifact-file
 
   lint:
     executor:
@@ -129,7 +129,7 @@ jobs:
       #                  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
       - run:
           name: Deploy to Firebase
-          command: firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"
+          command: firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes $GIT_COMMIT_MESSAGE --groups "app-testers"
 
       - slack/notify:
           event: pass
@@ -179,17 +179,17 @@ workflows:
   android_workflow:
     jobs:
       - build
-      - unit-test
-      - lint
-      - deploy-firebase:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - develop
-      - build-release:
-          filters:
-            branches:
-              only:
-                - /release-.*/
+#      - unit-test
+#      - lint
+#      - deploy-firebase:
+#          requires:
+#            - build
+#          filters:
+#            branches:
+#              only:
+#                - develop
+#      - build-release:
+#          filters:
+#            branches:
+#              only:
+#                - /release-.*/

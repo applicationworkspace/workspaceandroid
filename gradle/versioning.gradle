@@ -8,13 +8,8 @@ ext {
     ]
 
     calculateVersionCode = {
-//        def code = System.getenv("PIPELINE_RUN_NUMBER")
-        def pipelineRunId = System.getenv("CIRCLE_BUILD_NUM")
-//        return (appSetup.majorVersion * 100000)
-//                .plus(appSetup.minorVersion * 10000)
-//                .plus(appSetup.patchVersion * 1000)
-//                .plus((code != null && !code.isEmpty()) ? code.toInteger() : DEFAULT_PIPELINE_RUN_ID)
-//        return (code != null && !code.isEmpty()) ? code.toInteger() : DEFAULT_PIPELINE_RUN_NUMBER
+//        def pipelineRunId = System.getenv("PIPELINE_RUN_NUMBER")
+//        def pipelineRunId = System.getenv("CIRCLE_BUILD_NUM")
         def major = appSetup.majorVersion as int
         def minor = appSetup.minorVersion as int
         def patch = appSetup.patchVersion as int
@@ -23,7 +18,7 @@ ext {
 
     calculateVersionName = {
         def pipelineRunId = System.getenv("CIRCLE_BUILD_NUM") ?: 0
-        "${appSetup.majorVersion}.${appSetup.minorVersion}.${appSetup.patchVersion}-$pipelineRunId}"
+        "${appSetup.majorVersion}.${appSetup.minorVersion}.${appSetup.patchVersion}-$pipelineRunId"
     }
 }
 
