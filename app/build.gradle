@@ -70,8 +70,7 @@ android {
 ext.provideOutputFileName = { variant ->
 //    def versionName = variant.versionName.minus("-$configuration.debugSuffix")
     def versionName = variant.versionName
-    def versionCode = variant.versionCode
-//    def buildType = variant.name.minus("Flavor")
+    def versionCode = variant.versionCodea
     def buildType = variant.name
     def suffix = new Date().format("yyyy.MM.dd'T'HH.mm")
     return "${versionName}[${versionCode}]_${suffix}"
