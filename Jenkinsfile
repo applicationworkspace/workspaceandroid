@@ -38,13 +38,15 @@ pipeline {
 //     }
 
     stage('Deploy distribution') {
-       when {
-          // Only execute this stage when building from the `develop` branch
-          branch 'develop'
-       }
+//        when {
+//           // Only execute this stage when building from the `develop` branch
+//           branch 'develop'
+//        }
        steps {
          echo "Uploading to app distribution"
-         sh 'firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"'
+         withCredentials([string(credentialsId: 'firebase-android-app-id', variable: '$FIREBASE_ANDROID_APP_ID')]) {
+            sh 'firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "notes here jenkins" --groups "app-testers"'
+         }
        }
        post {
           success {
