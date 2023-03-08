@@ -58,15 +58,15 @@ pipeline {
 
   }
 
-//   post {
-//     failure {
-//       // Notify team of the failure
-//       withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
-//         slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Failed" )
-//       }
-//     }
-//   }
-// }
+  post {
+    failure {
+      // Notify team of the failure
+      withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
+        slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Failed" )
+      }
+    }
+  }
+}
 
 //   post {
 //           always {
