@@ -44,7 +44,6 @@ pipeline {
        }
        steps {
          echo "Uploading to app distribution"
-         sh 'curl -sL firebase.tools | bash'
          sh 'firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"'
        }
        post {
@@ -60,12 +59,12 @@ pipeline {
   }
 
   post {
-    failure {
-      // Notify team of the failure
-      withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
-        slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Failed" )
-      }
-    }
+//     failure {
+//       // Notify team of the failure
+//       withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
+//         slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Failed" )
+//       }
+//     }
   }
 }
 
