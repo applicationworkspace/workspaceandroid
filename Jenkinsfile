@@ -45,6 +45,7 @@ pipeline {
        steps {
          echo "Uploading to app distribution"
          sh 'curl -sL firebase.tools | bash'
+         sh 'firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"'
        }
        post {
           success {
