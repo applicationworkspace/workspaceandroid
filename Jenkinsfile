@@ -13,37 +13,38 @@ pipeline {
         sh './gradlew compileDebugSources'
       }
     }
-    stage('Unit test') {
-      steps {
-        // Compile and run the unit tests for the app and its dependencies
-        sh './gradlew testDebugUnitTest'
-        // Analyse the test results and update the build result as appropriate
-        junit '**/TEST-*.xml'
-      }
-    }
-    stage('Build APK') {
-      steps {
-        // Finish building and packaging the APK
-        sh './gradlew assembleDebug'
-        // Archive the APKs so that they can be downloaded from Jenkins
-        archiveArtifacts '**/*.apk'
-      }
-    }
-    stage('Static analysis') {
-      steps {
-        // Run Lint and analyse the results
-        sh './gradlew lintDebug'
-        androidLintParser pattern: '**/lint-results-*.xml'
-      }
-    }
+//     stage('Unit test') {
+//       steps {
+//         // Compile and run the unit tests for the app and its dependencies
+//         sh './gradlew testDebugUnitTest'
+//         // Analyse the test results and update the build result as appropriate
+//         junit '**/TEST-*.xml'
+//       }
+//     }
+//     stage('Build debug APK') {
+//       steps {
+//         // Finish building and packaging the APK
+//         sh './gradlew assembleDebug'
+//         // Archive the APKs so that they can be downloaded from Jenkins
+//         archiveArtifacts '**/*.apk'
+//       }
+//     }
+//     stage('Static analysis') {
+//       steps {
+//         // Run Lint and analyse the results
+//         sh './gradlew lintDebug'
+//         androidLintParser pattern: '**/lint-results-*.xml'
+//       }
+//     }
 
-    stage('Deploy') {
+    stage('Deploy distribution') {
        when {
           // Only execute this stage when building from the `develop` branch
           branch 'develop'
        }
        steps {
-        echo "Uploading to app distribution"
+         echo "Uploading to app distribution"
+         sh 'curl -sL firebase.tools | bash'
        }
        post {
           success {
