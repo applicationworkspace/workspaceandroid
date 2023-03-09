@@ -17,7 +17,8 @@ ext {
     }
 
     calculateVersionName = {
-        def pipelineRunId = System.getenv("CIRCLE_BUILD_NUM") ?: 0
+        def pipelineRunId = System.getenv("BUILD_NUMBER") ?: 0
+//        def pipelineRunId = System.getenv("CIRCLE_BUILD_NUM") ?: 0
         "${appSetup.majorVersion}.${appSetup.minorVersion}.${appSetup.patchVersion}-$pipelineRunId"
     }
 }

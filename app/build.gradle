@@ -34,11 +34,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
-        android.applicationVariants.all { variant ->
-            variant.outputs.all {
-                outputFileName = "${provideOutputFileName(variant)}.apk"
-            }
-        }
+//        android.applicationVariants.all { variant ->
+//            variant.outputs.all {
+//                outputFileName = "${provideOutputFileName(variant)}.apk"
+//            }
+//        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

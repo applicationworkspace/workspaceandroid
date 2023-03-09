@@ -21,14 +21,19 @@ pipeline {
 //         junit '**/TEST-*.xml'
 //       }
 //     }
-//     stage('Build debug APK') {
-//       steps {
-//         // Finish building and packaging the APK
-//         sh './gradlew assembleDebug'
-//         // Archive the APKs so that they can be downloaded from Jenkins
-//         archiveArtifacts '**/*.apk'
-//       }
-//     }
+    stage('Build debug APK') {
+      steps {
+        // Finish building and packaging the APK
+        sh './gradlew assembleDebug'
+        sh 'pwd'
+        sh 'ls'
+//         withCredentials([string(credentialsId: 'firebase-android-app-id', variable: 'FIREBASE_ANDROID_APP_ID'), string(credentialsId: 'firebase-distribution-token', variable: 'FIREBASE_DISTRIBUTION_TOKEN')]) {
+//             sh 'firebase appdistribution:distribute /app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes "notes here jenkins" --groups "app-testers"'
+//         }
+        // Archive the APKs so that they can be downloaded from Jenkins
+        archiveArtifacts '**/*.apk'
+      }
+    }
 //     stage('Static analysis') {
 //       steps {
 //         // Run Lint and analyse the results
@@ -44,30 +49,30 @@ pipeline {
 //        }
        steps {
          echo "Uploading to app distribution"
-         withCredentials([string(credentialsId: 'firebase-android-app-id', variable: '$FIREBASE_ANDROID_APP_ID')]) {
-            sh 'firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "notes here jenkins" --groups "app-testers"'
+         withCredentials([string(credentialsId: 'firebase-android-app-id', variable: 'FIREBASE_ANDROID_APP_ID'), string(credentialsId: 'firebase-distribution-token', variable: 'FIREBASE_DISTRIBUTION_TOKEN')]) {
+            sh 'firebase appdistribution:distribute /app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes "notes here jenkins" --groups "app-testers"'
          }
        }
-       post {
-          success {
-            // Notify if the upload succeeded
-            withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
-                slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Distribution" )
-            }
-          }
-        }
+//        post {
+//           success {
+//             // Notify if the upload succeeded
+//             withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
+//                 slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Distribution" )
+//             }
+//           }
+//         }
       }
 
   }
 
-  post {
-    failure {
-      // Notify team of the failure
-      withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
-        slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Failed" )
-      }
-    }
-  }
+//   post {
+//     failure {
+//       // Notify team of the failure
+//       withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
+//         slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Failed" )
+//       }
+//     }
+//   }
 }
 
 //   post {
