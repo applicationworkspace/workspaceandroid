@@ -38,7 +38,7 @@ pipeline {
     stage('get_commit_msg') {
         steps {
             script {
-                env.GIT_COMMIT_MSG = sh (script: 'git log -1 --format=reference ${GIT_COMMIT}', returnStdout: true).trim()
+                env.GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
             }
         }
     }
@@ -51,7 +51,7 @@ pipeline {
        steps {
          echo "Uploading to app distribution"
          withCredentials([string(credentialsId: 'firebase-android-app-id', variable: 'FIREBASE_ANDROID_APP_ID'), string(credentialsId: 'firebase-distribution-token', variable: 'FIREBASE_DISTRIBUTION_TOKEN')]) {
-            sh 'firebase appdistribution:distribute $WORKSPACE/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes "notes here jenkins" --groups "app-testers"'
+            sh 'firebase appdistribution:distribute $WORKSPACE/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes "${GIT_COMMIT_MSG}" --groups "app-testers"'
          }
        }
        post {
