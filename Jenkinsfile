@@ -50,7 +50,7 @@ pipeline {
        steps {
          echo "Uploading to app distribution"
          withCredentials([string(credentialsId: 'firebase-android-app-id', variable: 'FIREBASE_ANDROID_APP_ID'), string(credentialsId: 'firebase-distribution-token', variable: 'FIREBASE_DISTRIBUTION_TOKEN')]) {
-            sh 'firebase appdistribution:distribute /app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes "notes here jenkins" --groups "app-testers"'
+            sh 'firebase appdistribution:distribute /var/lib/jenkins/workspace/BuildPipeline/app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --token $FIREBASE_DISTRIBUTION_TOKEN --release-notes "notes here jenkins" --groups "app-testers"'
          }
        }
 //        post {
