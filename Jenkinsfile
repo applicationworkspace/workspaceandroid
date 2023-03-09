@@ -35,6 +35,13 @@ pipeline {
         androidLintParser pattern: '**/lint-results-*.xml'
       }
     }
+    stage('get_commit_msg') {
+        steps {
+            script {
+                env.GIT_COMMIT_MSG = sh (script: 'git log -1 --format=reference ${GIT_COMMIT}', returnStdout: true).trim()
+            }
+        }
+    }
 
     stage('Deploy distribution') {
        when {
@@ -51,7 +58,7 @@ pipeline {
           success {
             // Notify if the upload succeeded
             withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
-                slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Distribution" )
+                slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Distribution ready (${GIT_COMMIT_MSG})" )
             }
           }
         }
