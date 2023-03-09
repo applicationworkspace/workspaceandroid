@@ -2,9 +2,9 @@ def INITIAL_VERSION = 52
 
 ext {
     appSetup = [
-            majorVersion: 1,   // 1..∞
-            minorVersion: 0,    // 0..99
-            patchVersion: 0     // 0..999
+            majorVersion: 2,   // 1..∞
+            minorVersion: 5,    // 0..99
+            patchVersion: 21     // 0..999
     ]
 
     calculateVersionCode = {
