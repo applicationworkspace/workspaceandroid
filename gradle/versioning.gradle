@@ -3,13 +3,11 @@ def INITIAL_VERSION = 52
 ext {
     appSetup = [
             majorVersion: 2,   // 1..∞
-            minorVersion: 5,    // 0..99
-            patchVersion: 21     // 0..999
+            minorVersion: 11,  // 0..99
+            patchVersion: 5    // 0..999
     ]
 
     calculateVersionCode = {
-//        def pipelineRunId = System.getenv("PIPELINE_RUN_NUMBER")
-//        def pipelineRunId = System.getenv("CIRCLE_BUILD_NUM")
         def major = appSetup.majorVersion as int
         def minor = appSetup.minorVersion as int
         def patch = appSetup.patchVersion as int
@@ -17,19 +15,11 @@ ext {
     }
 
     calculateVersionName = {
-        def pipelineRunId = System.getenv("BUILD_NUMBER") ?: 0
-//        def pipelineRunId = System.getenv("CIRCLE_BUILD_NUM") ?: 0
+//        System.getenv("BUILD_NUMBER") // Jenkins
+//        System.getenv("CI_PIPELINE_IID") // Gitlab
+//        System.getenv("PIPELINE_RUN_NUMBER") // Github Actions
+//        System.getenv("CIRCLE_BUILD_NUM") // CircleCI
+        def pipelineRunId = System.getenv("CI_PIPELINE_IID") ?: 0
         "${appSetup.majorVersion}.${appSetup.minorVersion}.${appSetup.patchVersion}-$pipelineRunId"
     }
 }
-
-//// Circle ci BUILD_NUM
-//static def getBuildVersion() {
-//    def version = 32
-//    def buildNumber = System.getenv("CIRCLE_BUILD_NUM")
-//    if (buildNumber != null) {
-//        version += buildNumber as int
-//    }
-//    println("VersionCode: " + version)
-//    return version
-//}

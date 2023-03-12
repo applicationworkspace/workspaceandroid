@@ -3,15 +3,6 @@ orbs:
   android: circleci/android@2.0
   slack: circleci/slack@4.12.1
 
-#executors:
-#  my-executor:
-##    name: android/android-machine
-##    resource-class: large
-##    tag: 2021.10.1
-#    working_directory: ~/repo/outputs
-##    docker:
-##      - image: circleci/android:api-28-alpha
-
 jobs:
   build:
     executor:
@@ -61,7 +52,7 @@ jobs:
             mkdir -p test-results/xml/
             find . -type f -regex ".*/*test-results/.*xml" -exec cp {} test-results/xml/ \;
           when: always
-      # Make test results show up in the CircleCI build dashboard
+
       - run:
           name: Save test results
           command: |
@@ -110,7 +101,6 @@ jobs:
       - run:
           name: Get commit message
           command: echo "export GIT_COMMIT_MESSAGE=\"$(git log --format=reference -n 1 $CIRCLE_SHA1)\"" >> $BASH_ENV
-
       - run:
           name: Install Firebase CLI
           command: curl -sL firebase.tools | bash
@@ -118,10 +108,6 @@ jobs:
           name: Create Service Account key JSON
           command: |
             echo "$SERVICE_ACCOUNT_KEY" | base64 --decode --ignore-garbage > "gcloud.json"
-      #            - run:
-      #                name: Create env
-      #                command: printf "%s\n" $GOOGLE_APPLICATION_CREDENTIALS
-      #                  export GOOGLE_APPLICATION_CREDENTIALS="${HOME}/gcloud.json"
       - run:
           name: Deploy to Firebase
           command: firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk --app $FIREBASE_ANDROID_APP_ID --release-notes "$GIT_COMMIT_MESSAGE" --groups "app-testers"
@@ -170,21 +156,21 @@ jobs:
 #               - store_artifacts:
 #               path: app/build/outputs/apk/release
 
-#workflows:
-#  android_workflow:
-#    jobs:
-#      - build
-#      - unit-test
-#      - lint
-#      - deploy-firebase:
-#          requires:
-#            - build
-#          filters:
-#            branches:
-#              only:
-#                - develop
-#      - build-release:
-#          filters:
-#            branches:
-#              only:
-#                - /release-.*/
+workflows:
+  android_workflow:
+    jobs:
+      - build
+      - unit-test
+      - lint
+      - deploy-firebase:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+      - build-release:
+          filters:
+            branches:
+              only:
+                - /release-.*/
