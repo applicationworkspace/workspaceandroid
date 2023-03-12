@@ -35,7 +35,6 @@ jobs:
           path: app/build/reports/lint-results-debug.html
 
   test:
-    needs: [ lint ]
     name: Job Unit Tests
     runs-on: ubuntu-latest
 
