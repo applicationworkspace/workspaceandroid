@@ -152,9 +152,15 @@ jobs:
       resource-class: large
       tag: 2021.10.1
     steps:
-      - run: echo "Build release apk"
-#               - store_artifacts:
-#               path: app/build/outputs/apk/release
+      - run:
+          name: export KEYSTORE path
+          command: echo 'export KEYSTORE_FILE=$(pwd)/keystore.jks' >> $BASH_ENV
+      - run:
+          name: Build assembleRelease
+          command: ./gradlew assembleRelease
+      - store_artifacts:
+          path: app/build/outputs/apk/release
+          destination: apk
 
 workflows:
   android_workflow:
@@ -173,4 +179,4 @@ workflows:
           filters:
             branches:
               only:
-                - /release-.*/
+                - develop
