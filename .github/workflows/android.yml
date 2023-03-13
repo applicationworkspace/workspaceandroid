@@ -178,7 +178,8 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: gradle
-
+      - name: Assemble Release Apk
+        run: ./gradlew assembleRelease
       - uses: r0adkll/sign-android-release@v1
         name: Sign app APK
         id: sign_app
