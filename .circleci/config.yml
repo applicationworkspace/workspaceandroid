@@ -156,7 +156,7 @@ jobs:
       - android/restore-gradle-cache
       - run:
           name: create KEYSTORE
-          command: echo $KEYSTORE_FILE | base64 -d > release.jks
+          command: echo $KEYSTORE_FILE | base64 -d > keystore.jks
       - run:
           name: Build assembleRelease
           command: ./gradlew assembleRelease
