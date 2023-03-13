@@ -155,8 +155,8 @@ jobs:
       - checkout
       - android/restore-gradle-cache
       - run:
-          name: export KEYSTORE path
-          command: echo 'export KEYSTORE_FILE=$(pwd)/keystore.jks' >> $BASH_ENV
+          name: create KEYSTORE
+          command: echo $KEYSTORE_FILE | base64 -d > release.jks
       - run:
           name: Build assembleRelease
           command: ./gradlew assembleRelease
