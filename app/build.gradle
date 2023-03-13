@@ -15,7 +15,6 @@ android {
         minSdk 28
         targetSdk 33
         versionCode calculateVersionCode()
-//        versionCode getBuildVersion() as int
         versionName calculateVersionName()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
