@@ -182,4 +182,4 @@ workflows:
           filters:
             branches:
               only:
-                - /release-.*/
+                - main
