@@ -3,34 +3,28 @@ pipeline {
     label 'built-in'
   }
   options {
-    // Stop the build early in case of compile or test failures
     skipStagesAfterUnstable()
   }
   stages {
     stage('Compile') {
       steps {
-        // Compile the app and its dependencies
         sh './gradlew compileDebugSources'
       }
     }
     stage('Unit test') {
       steps {
-        // Compile and run the unit tests for the app and its dependencies
         sh './gradlew testDebugUnitTest'
-        // Analyse the test results and update the build result as appropriate
         junit '**/TEST-*.xml'
       }
     }
     stage('Build debug APK') {
       steps {
-        // Finish building and packaging the APK
         sh './gradlew assembleDebug'
         archiveArtifacts '**/*.apk'
       }
     }
     stage('Static analysis') {
       steps {
-        // Run Lint and analyse the results
         sh './gradlew lintDebug'
         androidLintParser pattern: '**/lint-results-*.xml'
       }
@@ -56,7 +50,6 @@ pipeline {
        }
        post {
           success {
-            // Notify if the upload succeeded
             withCredentials([string(credentialsId: 'jenkins-slack-token', variable: 'SLACK_TOKEN')]) {
                 slackSend( channel: "#pipeline_process", token: "${SLACK_TOKEN}", color: "#00ff00", message: "Distribution ready (${GIT_COMMIT_MSG})" )
             }

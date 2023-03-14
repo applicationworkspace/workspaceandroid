@@ -1,5 +1,26 @@
 name: Android PR workflow
 
+#commands:
+#  trigger_slack_notification:
+#    steps:
+#      - slack/notify:
+#          event: pass
+#          custom: |
+#            {
+#              "text": "Deployment started on *${CIRCLE_BRANCH}* branch",
+#              "mrkdwn": "true"
+#            }
+#  notify_slack_error:
+#    steps:
+#      - slack/notify:
+#          event: fail
+#          template: basic_fail_1
+#
+#  notify_slack_pass:
+#    steps:
+#      - slack/notify:
+#          event: pass
+#          template: basic_success_1
 on:
   push:
     branches:
@@ -13,158 +34,159 @@ on:
       - '*/release-*'
 jobs:
 
-#  lint:
-#    name: Job Lint Check
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: set up JDK 11
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: '11'
-#          distribution: 'temurin'
-#          cache: gradle
-#
-#      - name: Lint debug flavor
-#        run: bash ./gradlew lintDebug --stacktrace
-#      - name: Lint results
-#        uses: actions/upload-artifact@v1
-#        with:
-#          name: lint-results
-#          path: app/build/reports/lint-results-debug.html
-#
-#  test:
-#    name: Job Unit Tests
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: set up JDK 11
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: '11'
-#          distribution: 'temurin'
-#          cache: gradle
-#
-#      - name: Unit tests
-#        run: bash ./gradlew test --stacktrace
-#      - name: Unit tests results
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: unit-tests-results
-#          path: app/build/reports/tests/testDebugUnitTest/index.html
-#        if: always()
-#
-#  build:
-#    name: Job Build
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: set up JDK 11
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: '11'
-#          distribution: 'temurin'
-#          cache: gradle
-#
-#      - name: Grant execute permission for gradlew
-#        run: chmod +x gradlew
-#
-#      - name: Build debug APK
-#        env:
-#          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
-#        run: ./gradlew assembleDebug
-#
-#      - run: echo "VERSION_NAME=$(${{github.workspace}}/gradlew -q printVersionInformation)" >> $GITHUB_ENV
-#
-#      - name: Upload APK
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: workspace_${{ env.VERSION_NAME }}(${{ github.run_number }}).apk
-#          path: app/build/outputs/apk/debug/app-debug.apk
-#
-#  distribution:
-#    needs: [ build ]
-#    name: Job Distribution
-#    runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/develop'
-#    steps:
-#      - uses: actions/checkout@v3
-#      - name: set up JDK 11
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: '11'
-#          distribution: 'temurin'
-#          cache: gradle
-#      - name: build dev apk
-#        env:
-#          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
-#        run: ./gradlew assembleDebug
-#      - name: Upload artifact to Firebase App Distribution
-#        uses: wzieba/Firebase-Distribution-Github-Action@v1
-#        with:
-#          appId: ${{secrets.FIREBASE_APP_ID}}
-#          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-#          groups: app-testers
-#          releaseNotes: ${{ github.event.head_commit.message }}
-#          file: app/build/outputs/apk/release/app-release-unsigned.apk
-#
-#      - name: Set current date as env variable
-#        run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
-#
-#      - name: Send Slack notification
-#        if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
-#        id: slack
-#        uses: slackapi/slack-github-action@v1.23.0
-#        with:
-#          payload: |
-#            {
-#              "blocks": [
-#                {
-#                  "type": "header",
-#                  "text": {
-#                    "type": "plain_text",
-#                    "text": "CI/CD workflow"
-#                  }
-#                },
-#                {
-#                  "type": "section",
-#                  "fields": [
-#                    {
-#                      "type": "mrkdwn",
-#                      "text": "*Type:*\nPull request"
-#                    },
-#                    {
-#                      "type": "mrkdwn",
-#                      "text": "*Created by:*\n${{ github.actor }}"
-#                    }
-#                  ]
-#                },
-#                {
-#                  "type": "section",
-#                  "fields": [
-#                    {
-#                      "type": "mrkdwn",
-#                      "text": "*When:*\n${{ env.NOW }}"
-#                    }
-#                  ]
-#                },
-#                {
-#                  "type": "divider"
-#                },
-#                {
-#                  "type": "section",
-#                  "text": {
-#                    "type": "mrkdwn",
-#                    "text": "*Details:*\n${{ github.event.pull_request.title }} \n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-#                }
-#              }
-#              ]
-#            }
-#        env:
-#          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-#          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+  lint:
+    name: Job Lint Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Lint debug flavor
+        run: bash ./gradlew lintDebug --stacktrace
+      - name: Lint results
+        uses: actions/upload-artifact@v1
+        with:
+          name: lint-results
+          path: app/build/reports/lint-results-debug.html
+
+  test:
+    name: Job Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Unit tests
+        run: bash ./gradlew test --stacktrace
+      - name: Unit tests results
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-tests-results
+          path: app/build/reports/tests/testDebugUnitTest/index.html
+        if: always()
+
+  build:
+    name: Job Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        env:
+          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
+        run: ./gradlew assembleDebug
+
+      - run: echo "VERSION_NAME=$(${{github.workspace}}/gradlew -q printVersionInformation)" >> $GITHUB_ENV
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: workspace_${{ env.VERSION_NAME }}(${{ github.run_number }}).apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+  distribution:
+    needs: [ build ]
+    name: Job Distribution
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - uses: actions/checkout@v3
+      - name: set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+      - name: build dev apk
+        env:
+          PIPELINE_RUN_NUMBER: ${{ github.run_number }}
+        run: ./gradlew assembleDebug
+
+      - name: Upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: app-testers
+          releaseNotes: ${{ github.event.head_commit.message }}
+          file: app/build/outputs/apk/release/app-release-unsigned.apk
+
+      - name: Set current date as env variable
+        run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+
+      - name: Send Slack notification
+        if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
+        id: slack
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "CI/CD workflow"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Type:*\nPull request"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Created by:*\n${{ github.actor }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*When:*\n${{ env.NOW }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Details:*\n${{ github.event.pull_request.title }} \n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                }
+              }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
   assemble-release:
     name: Job Build Release
