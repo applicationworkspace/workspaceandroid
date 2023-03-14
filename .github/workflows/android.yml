@@ -45,7 +45,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-          cache: gradle
+#          cache: gradle
 
       - name: Lint debug flavor
         run: bash ./gradlew lintDebug --stacktrace
@@ -66,7 +66,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-          cache: gradle
+#          cache: gradle
 
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
@@ -87,7 +87,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-          cache: gradle
+#          cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -117,7 +117,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-          cache: gradle
+#          cache: gradle
       - name: build dev apk
         env:
           PIPELINE_RUN_NUMBER: ${{ github.run_number }}
@@ -199,7 +199,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-          cache: gradle
+#          cache: gradle
       - name: Assemble Release Apk
         run: ./gradlew assembleRelease
       - uses: r0adkll/sign-android-release@v1
