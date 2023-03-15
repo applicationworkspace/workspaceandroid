@@ -121,12 +121,14 @@ jobs:
 
       - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
+        env:
+          APK_LOCATION: find ./app/build/outputs/apk/debug/ -type f -name "*.apk"
         with:
           appId: ${{secrets.FIREBASE_APP_ID}}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: app-testers
           releaseNotes: ${{ github.event.head_commit.message }}
-          file: find ./app/build/outputs/apk/debug/ -type f -name "*.apk"
+          file: $APK_LOCATION
 
       - name: Set current date as env variable
         run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
