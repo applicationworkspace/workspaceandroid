@@ -103,21 +103,21 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
     steps:
-
-      - name: Retrieve cached artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ steps.version-setter.outputs.VERSION_NAME_OUTPUT }}"
-      - run: ls -l
-      - run: pwd
-      - name: Upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: app-testers
-          releaseNotes: ${{ github.event.head_commit.message }}
-          file: ./app-debug.apk
+      - run: echo ${{ steps.version-setter.outputs.VERSION_NAME_OUTPUT }}"
+#      - name: Retrieve cached artifact
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: ${{ steps.version-setter.outputs.VERSION_NAME_OUTPUT }}"
+#      - run: ls -l
+#      - run: pwd
+#      - name: Upload artifact to Firebase App Distribution
+#        uses: wzieba/Firebase-Distribution-Github-Action@v1
+#        with:
+#          appId: ${{secrets.FIREBASE_APP_ID}}
+#          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+#          groups: app-testers
+#          releaseNotes: ${{ github.event.head_commit.message }}
+#          file: ./app-debug.apk
 
   assemble-release:
     name: Job Build Release
