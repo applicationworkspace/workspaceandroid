@@ -102,7 +102,7 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: ${ env.VERSION_NAME }.apk
+          name: ${{ env.VERSION_NAME }}.apk
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 1
 
@@ -117,11 +117,10 @@ jobs:
       - name: Retrieve cached artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${ env.VERSION_NAME }.apk
-      - run: ls .
-      - run: ls
+          name: ${{ env.VERSION_NAME }}.apk
+      - run: ls -l
       - run: pwd
-
+        -
       - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
@@ -129,8 +128,7 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: app-testers
           releaseNotes: ${{ github.event.head_commit.message }}
-          file: ${ env.VERSION_NAME }.apk
-
+          file: ./app-debug.apk
 
   assemble-release:
     name: Job Build Release
