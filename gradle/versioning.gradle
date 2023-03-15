@@ -4,7 +4,7 @@ ext {
     appSetup = [
             majorVersion: 2,   // 1..∞
             minorVersion: 11,  // 0..99
-            patchVersion: 5    // 0..999
+            patchVersion: 6    // 0..999
     ]
 
     calculateVersionCode = {
