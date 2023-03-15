@@ -1,26 +1,17 @@
 name: Android PR workflow
 
-#commands:
-#  trigger_slack_notification:
-#    steps:
-#      - slack/notify:
-#          event: pass
-#          custom: |
-#            {
-#              "text": "Deployment started on *${CIRCLE_BRANCH}* branch",
-#              "mrkdwn": "true"
-#            }
-#  notify_slack_error:
-#    steps:
-#      - slack/notify:
-#          event: fail
-#          template: basic_fail_1
-#
-#  notify_slack_pass:
-#    steps:
-#      - slack/notify:
-#          event: pass
-#          template: basic_success_1
+commands:
+  notify_slack_fail:
+    steps:
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@v1
+        with:
+          status: ${{ job.status }}
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
 on:
   push:
     branches:
@@ -106,6 +97,8 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 1
 
+      - notify_slack_fail
+
   distribution:
     needs: [ build ]
     name: Job Distribution
@@ -120,7 +113,6 @@ jobs:
           name: ${{ env.VERSION_NAME }}.apk
       - run: ls -l
       - run: pwd
-        -
       - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
@@ -129,6 +121,8 @@ jobs:
           groups: app-testers
           releaseNotes: ${{ github.event.head_commit.message }}
           file: ./app-debug.apk
+          
+      - notify_slack_fail
 
   assemble-release:
     name: Job Build Release
