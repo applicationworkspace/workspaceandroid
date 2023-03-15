@@ -119,72 +119,8 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      - name: Upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        env:
-          APK_LOCATION: find ./app/build/outputs/apk/debug/ -type f -name "*.apk"
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: app-testers
-          releaseNotes: ${{ github.event.head_commit.message }}
-          file: $APK_LOCATION
-
       - name: Set current date as env variable
-        run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
-
-      - name: Send Slack notification
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
-        id: slack
-        uses: slackapi/slack-github-action@v1.23.0
-        with:
-          payload: |
-            {
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "CI/CD workflow"
-                  }
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Type:*\nPull request"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Created by:*\n${{ github.actor }}"
-                    }
-                  ]
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*When:*\n${{ env.NOW }}"
-                    }
-                  ]
-                },
-                {
-                  "type": "divider"
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Details:*\n${{ github.event.pull_request.title }} \n${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                }
-              }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        run: echo "ls app/build/outputs/apk/debug"
 
   assemble-release:
     name: Job Build Release
