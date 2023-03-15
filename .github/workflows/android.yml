@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
     steps:
-      - run: echo ${{ steps.version-setter.outputs.VERSION_NAME_OUTPUT }}"
+      - run: echo "${{ steps.version-setter.outputs.VERSION_NAME_OUTPUT }}"
 #      - name: Retrieve cached artifact
 #        uses: actions/download-artifact@v3
 #        with:
