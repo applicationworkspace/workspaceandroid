@@ -1,17 +1,5 @@
 name: Android PR workflow
 
-commands:
-  notify_slack_fail:
-    steps:
-      - name: Report Status
-        if: always()
-        uses: ravsamhq/notify-slack-action@v1
-        with:
-          status: ${{ job.status }}
-          notify_when: 'failure'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
 on:
   push:
     branches:
@@ -67,6 +55,14 @@ jobs:
 #          name: unit-tests-results
 #          path: app/build/reports/tests/testDebugUnitTest/index.html
 #        if: always()
+#  - name: Report Status
+#      if: always()
+#      uses: ravsamhq/notify-slack-action@v1
+#      with:
+#        status: ${{ job.status }}
+#        notify_when: 'failure'
+#      env:
+#        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   build:
     name: Job Build
@@ -97,8 +93,6 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 1
 
-      - notify_slack_fail
-
   distribution:
     needs: [ build ]
     name: Job Distribution
@@ -121,8 +115,6 @@ jobs:
           groups: app-testers
           releaseNotes: ${{ github.event.head_commit.message }}
           file: ./app-debug.apk
-          
-      - notify_slack_fail
 
   assemble-release:
     name: Job Build Release
