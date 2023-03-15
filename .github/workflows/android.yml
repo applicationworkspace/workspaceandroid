@@ -104,7 +104,7 @@ jobs:
       - name: Retrieve cached artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ env.VERSION_NAME }}.apk
+          name: ${{ env.APK_NAME }}.apk
       - run: ls -l
       - run: pwd
       - name: Upload artifact to Firebase App Distribution
