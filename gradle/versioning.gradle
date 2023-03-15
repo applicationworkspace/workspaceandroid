@@ -19,7 +19,7 @@ ext {
 //        System.getenv("CI_PIPELINE_IID") // Gitlab
 //        System.getenv("PIPELINE_RUN_NUMBER") // Github Actions
 //        System.getenv("CIRCLE_BUILD_NUM") // CircleCI
-        def pipelineRunId = System.getenv("CI_PIPELINE_IID") ?: 0
+        def pipelineRunId = System.getenv("PIPELINE_RUN_NUMBER") ?: 0
         "${appSetup.majorVersion}.${appSetup.minorVersion}.${appSetup.patchVersion}-$pipelineRunId"
     }
 }
