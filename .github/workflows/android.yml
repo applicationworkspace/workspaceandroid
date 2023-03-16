@@ -89,14 +89,15 @@ jobs:
       - name: Set artifact name
         id: version-setter
         run: |
+          echo "VERSION_NAME=$(${{github.workspace}}/gradlew -q printVersionInformation)" >> $GITHUB_ENV
           echo "VERSION_NAME_OUTPUT=$(${{github.workspace}}/gradlew -q printVersionInformation)" >> $GITHUB_OUTPUT
 
-#      - name: Upload APK
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: ${{ env.VERSION_NAME }}.apk
-#          path: app/build/outputs/apk/debug/app-debug.apk
-#          retention-days: 1
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.VERSION_NAME }}.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 1
 
   distribution:
     needs: [ build ]
@@ -104,21 +105,21 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
     steps:
-      - run: echo ${{needs.build.outputs.VERSION_NAME_OUTPUT}}
-#      - name: Retrieve cached artifact
-#        uses: actions/download-artifact@v3
-#        with:
-#          name: ${{ steps.version-setter.outputs.VERSION_NAME_OUTPUT }}"
-#      - run: ls -l
-#      - run: pwd
-#      - name: Upload artifact to Firebase App Distribution
-#        uses: wzieba/Firebase-Distribution-Github-Action@v1
-#        with:
-#          appId: ${{secrets.FIREBASE_APP_ID}}
-#          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-#          groups: app-testers
-#          releaseNotes: ${{ github.event.head_commit.message }}
-#          file: ./app-debug.apk
+      - run: echo
+      - name: Retrieve cached artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.build.outputs.VERSION_NAME_OUTPUT }}.apk
+      - run: ls -l
+      - run: pwd
+      - name: Upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: app-testers
+          releaseNotes: ${{ github.event.head_commit.message }}
+          file: ./app-debug.apk
 
   assemble-release:
     name: Job Build Release
