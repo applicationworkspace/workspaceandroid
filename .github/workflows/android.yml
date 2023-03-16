@@ -67,6 +67,8 @@ jobs:
   build:
     name: Job Build
     runs-on: ubuntu-latest
+    outputs:
+      VERSION_NAME_OUTPUT: ${{ steps.version-setter.outputs.VERSION_NAME_OUTPUT }}
     steps:
       - uses: actions/checkout@v3
       - name: set up JDK 11
@@ -102,7 +104,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
     steps:
-      - run: echo "${{ steps.version-setter.outputs.VERSION_NAME_OUTPUT }}"
+      - run: echo ${{needs.build.outputs.VERSION_NAME_OUTPUT}}
 #      - name: Retrieve cached artifact
 #        uses: actions/download-artifact@v3
 #        with:
