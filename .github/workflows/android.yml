@@ -87,15 +87,14 @@ jobs:
       - name: Set artifact name
         id: version-setter
         run: |
-          echo "VERSION_NAME=$(${{github.workspace}}/gradlew -q printVersionInformation)" >> $GITHUB_ENV
           echo "VERSION_NAME_OUTPUT=$(${{github.workspace}}/gradlew -q printVersionInformation)" >> $GITHUB_OUTPUT
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.VERSION_NAME }}.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 1
+#      - name: Upload APK
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: ${{ env.VERSION_NAME }}.apk
+#          path: app/build/outputs/apk/debug/app-debug.apk
+#          retention-days: 1
 
   distribution:
     needs: [ build ]
