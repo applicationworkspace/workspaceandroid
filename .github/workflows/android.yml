@@ -52,14 +52,15 @@ jobs:
           name: unit-tests-results
           path: app/build/reports/tests/testDebugUnitTest/index.html
         if: always()
-  - name: Report Status
-      if: always()
-      uses: ravsamhq/notify-slack-action@v1
-      with:
-        status: ${{ job.status }}
-        notify_when: 'failure'
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        
+      - name: Report Status
+          if: always()
+          uses: ravsamhq/notify-slack-action@v1
+          with:
+            status: ${{ job.status }}
+            notify_when: 'failure'
+          env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   build:
     name: Job Build
