@@ -22,7 +22,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-#          cache: gradle
+          cache: gradle
 
       - name: Lint debug flavor
         run: bash ./gradlew lintDebug --stacktrace
@@ -42,7 +42,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-#          cache: gradle
+          cache: gradle
 
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
@@ -74,7 +74,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-#          cache: gradle
+          cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -107,8 +107,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ needs.build.outputs.VERSION_NAME_OUTPUT }}.apk
-      - run: ls -l
-      - run: pwd
       - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
@@ -129,7 +127,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-#          cache: gradle
+          cache: gradle
       - name: Assemble Release Apk
         run: ./gradlew assembleRelease
       - uses: r0adkll/sign-android-release@v1
