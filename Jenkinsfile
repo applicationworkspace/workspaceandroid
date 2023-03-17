@@ -39,7 +39,6 @@ pipeline {
 
     stage('Deploy distribution') {
        when {
-          // Only execute this stage when building from the `develop` branch
           branch 'develop'
        }
        steps {
