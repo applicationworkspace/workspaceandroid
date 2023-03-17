@@ -89,6 +89,7 @@ jobs:
       JVM_OPTS: -Xmx2048m
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
     steps:
+      - checkout
       - attach_workspace:
           at: ./
 
