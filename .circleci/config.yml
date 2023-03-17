@@ -89,7 +89,6 @@ jobs:
       JVM_OPTS: -Xmx2048m
       GOOGLE_APPLICATION_CREDENTIALS: "gcloud.json"
     steps:
-      - checkout
       - attach_workspace:
           at: ./
 
@@ -155,7 +154,7 @@ jobs:
       - run:
           name: Build assembleRelease
           command: ./gradlew assembleRelease
-   
+
       - store_artifacts:
           path: app/build/outputs/apk/release
           destination: apk
