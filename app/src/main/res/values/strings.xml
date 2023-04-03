@@ -48,4 +48,10 @@
 
     <string name="no_results">No results</string>
 
+    <!--    Notification -->
+    <string name="title_notification_reminder">notification_title</string>
+    <string name="description_notification_reminder">notification_description</string>
+    <string name="reminders_notification_channel_id">notification_channel_id</string>
+    <string name="reminders_notification_channel_name">notification_channel_name</string>
+
 </resources>

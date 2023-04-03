@@ -12,7 +12,11 @@ class CollectionContract {
         data class OnItemSelected(val phraseId: Int) : Event()
     }
 
-    sealed class CollectionState : ViewState {
+    data class State(
+        val collectionState: CollectionState
+    ) : ViewState
+
+    sealed class CollectionState {
         object Loading : CollectionState()
         data class Success(
             val phrases: List<Phrase>,

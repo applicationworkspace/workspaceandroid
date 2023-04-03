@@ -87,9 +87,8 @@ fun CollectionScreen(
     viewModel: CollectionViewModel = hiltViewModel()
 ) {
 
-
     CollectionScreen(
-        state = viewModel.viewState.collectAsState().value,
+        state = viewModel.viewState.collectAsState().value.collectionState,
         onFloatingButtonClick = {},
         onItemClick = { itemId ->
             viewModel.setEvent(CollectionContract.Event.OnItemSelected(itemId))
@@ -134,7 +133,7 @@ fun CollectionScreen(
             )
             if (state is CollectionContract.CollectionState.Success) {
 
-                OverViewSection(cardsSize = state.phrases.size)
+                OverviewSection(cardsSize = state.phrases.size)
 
                 LazyColumn(
                     modifier = Modifier
@@ -307,7 +306,7 @@ fun CustomChipTitle(
 }
 
 @Composable
-fun OverViewSection(
+fun OverviewSection(
     cardsSize: Int
 ) {
     Column(

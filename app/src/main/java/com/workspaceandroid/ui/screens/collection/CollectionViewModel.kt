@@ -12,8 +12,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CollectionViewModel @Inject constructor(
     private val collectionInteractor: CollectionInteractor,
-    private val timeHelper: ITimeHelper
-) : BaseViewModel<CollectionContract.Event, CollectionContract.CollectionState, CollectionContract.Effect>() {
+    private val timeHelper: ITimeHelper,
+) : BaseViewModel<CollectionContract.Event, CollectionContract.State, CollectionContract.Effect>() {
 
     private val expandedCardIds = mutableListOf<Int>()
     private var userPhrases: List<Phrase> = emptyList()
@@ -22,7 +22,8 @@ class CollectionViewModel @Inject constructor(
         fetchUserCollection()
     }
 
-    override fun setInitialState(): CollectionContract.CollectionState = CollectionContract.CollectionState.Loading
+    override fun setInitialState(): CollectionContract.State =
+        CollectionContract.State(CollectionContract.CollectionState.Loading)
 
     override fun handleEvents(event: CollectionContract.Event) {
         when (event) {
@@ -35,13 +36,10 @@ class CollectionViewModel @Inject constructor(
         if (expandedCardIds.contains(cardId)) expandedCardIds.remove(cardId)
         else expandedCardIds.add(cardId)
         setState {
-            CollectionContract.CollectionState.Loading
-        }
-        setState {
-            CollectionContract.CollectionState.Success(
+            copy(collectionState = CollectionContract.CollectionState.Success(
                 userPhrases,
                 expandedCardIds
-            )
+            ))
         }
     }
 
@@ -49,10 +47,10 @@ class CollectionViewModel @Inject constructor(
         viewModelScope.launch {
             userPhrases = collectionInteractor.getUserPhrases()
             setState {
-                CollectionContract.CollectionState.Success(
+                copy(collectionState = CollectionContract.CollectionState.Success(
                     userPhrases,
                     expandedCardIds
-                )
+                ))
             }
         }
     }

@@ -37,7 +37,7 @@ object RepositoryModule {
 
     @Provides
     @ViewModelScoped
-    fun provideHomeRepository(
+    fun provideCollectionRepository(
         netSource: IPhrasesNetSource,
         phrasesNetMapper: PhrasesNetMapper
     ): ICollectionRepository {
