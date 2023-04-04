@@ -15,7 +15,6 @@ class CollectionViewModel @Inject constructor(
     private val timeHelper: ITimeHelper,
 ) : BaseViewModel<CollectionContract.Event, CollectionContract.State, CollectionContract.Effect>() {
 
-    private val expandedCardIds = mutableListOf<Int>()
     private var userPhrases: List<Phrase> = emptyList()
 
     init {
@@ -23,34 +22,33 @@ class CollectionViewModel @Inject constructor(
     }
 
     override fun setInitialState(): CollectionContract.State =
-        CollectionContract.State(CollectionContract.CollectionState.Loading)
+        CollectionContract.State(isLoading = true)
 
     override fun handleEvents(event: CollectionContract.Event) {
         when (event) {
             is CollectionContract.Event.AddButtonClicked -> fetchUserCollection()
-            is CollectionContract.Event.OnItemSelected -> updateExpandedCards(event.phraseId)
+            is CollectionContract.Event.OnItemSelected -> updateExpandedCards(event.selectedPhrase)
         }
     }
 
-    private fun updateExpandedCards(cardId: Int) {
-        if (expandedCardIds.contains(cardId)) expandedCardIds.remove(cardId)
-        else expandedCardIds.add(cardId)
+    private fun updateExpandedCards(selectedPhrase: Phrase) {
         setState {
-            copy(collectionState = CollectionContract.CollectionState.Success(
-                userPhrases,
-                expandedCardIds
-            ))
+            userPhrases = phrases.map {
+                if (it.id == selectedPhrase.id) it.copy(isExpanded = !it.isExpanded)
+                else it
+            }.toMutableList()
+            copy(phrases = userPhrases)
         }
     }
 
     private fun fetchUserCollection() {
+        if (userPhrases.isNotEmpty()) {
+            return
+        }
         viewModelScope.launch {
             userPhrases = collectionInteractor.getUserPhrases()
             setState {
-                copy(collectionState = CollectionContract.CollectionState.Success(
-                    userPhrases,
-                    expandedCardIds
-                ))
+                copy(phrases = userPhrases, isLoading = false)
             }
         }
     }

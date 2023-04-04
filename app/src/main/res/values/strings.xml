@@ -45,6 +45,15 @@
     <string name="search_title">Create card</string>
     <string name="search_enter_phrase">Enter phrase</string>
 
+<!--    Create card -->
+    <string name="create_card_phrase_label">Phrase</string>
+    <string name="create_card_phrase_placeholder">Enter phrase</string>
+    <string name="create_card_definition_label">Definition</string>
+    <string name="create_card_definition_placeholder">Enter definition</string>
+    <string name="create_card_add_example">Add example</string>
+    <string name="create_card_example_placeholder">Enter example</string>
+    <string name="create_card_translation_label">Translation</string>
+    <string name="create_card_translation_placeholder">Enter translation</string>
 
     <string name="no_results">No results</string>
 

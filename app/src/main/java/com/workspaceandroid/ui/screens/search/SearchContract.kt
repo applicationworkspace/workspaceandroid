@@ -3,11 +3,13 @@ package com.workspaceandroid.ui.screens.search
 import com.workspaceandroid.base.ViewEvent
 import com.workspaceandroid.base.ViewSideEffect
 import com.workspaceandroid.base.ViewState
+import com.workspaceandroid.domain.models.phrase.PhraseInput
 
 class SearchContract {
 
     sealed class Event : ViewEvent {
-        data class OnSearchButtonClicked(val email: String, val password: String) : Event()
+        object OnSaveButtonClicked : Event()
+        data class OnPhraseUpdated(val phraseBuilder: PhraseInput.() -> Unit) : Event()
     }
 
     sealed class SearchState: ViewState {

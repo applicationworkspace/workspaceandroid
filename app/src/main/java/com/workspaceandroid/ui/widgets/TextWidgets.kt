@@ -9,15 +9,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,11 +31,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import com.workspaceandroid.R
-import com.workspaceandroid.ui.theme.icon_size_24
-import com.workspaceandroid.ui.theme.offset_4
-import com.workspaceandroid.ui.theme.radius_8
+import com.workspaceandroid.ui.theme.*
 
 @Composable
 fun HyperlinkText(
@@ -50,12 +46,12 @@ fun HyperlinkText(
     linkTextFontWeight: FontWeight = FontWeight.Normal,
     linkTextDecoration: TextDecoration = TextDecoration.None,
     fontSize: TextUnit = TextUnit.Unspecified,
-    clickListener: (() -> Unit)? = null
+    clickListener: (() -> Unit)? = null,
 ) {
     val annotatedString = buildAnnotatedString {
         append(fullText)
 
-        for((key, value) in hyperLinks){
+        for ((key, value) in hyperLinks) {
 
             val startIndex = fullText.indexOf(key)
             val endIndex = startIndex + key.length
@@ -115,7 +111,7 @@ fun InputTextField(
     inputType: KeyboardType,
     placeholderText: String,
     isError: Boolean = false,
-    maxLines: Int = 1
+    maxLines: Int = 1,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -154,7 +150,7 @@ fun PasswordInputTextField(
     onInputChanged: (String) -> Unit,
     placeholderText: String,
     isError: Boolean = false,
-    maxLines: Int = 1
+    maxLines: Int = 1,
 ) {
     var passwordVisible: Boolean by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -196,6 +192,49 @@ fun PasswordInputTextField(
             placeholder = { Text(text = placeholderText) },
             shape = RoundedCornerShape(radius_8),
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TextInput(
+    modifier: Modifier = Modifier,
+    initialValue: String = "",
+    label: String? = null,
+    onInputChanged: (String) -> Unit = { },
+    placeholderText: String,
+    maxLines: Int = 1,
+) {
+    val focusManager = LocalFocusManager.current
+    val input = rememberSaveable { mutableStateOf(initialValue) }
+
+    Column(modifier = modifier) {
+        label?.let {
+            Text(
+                text = label,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+        TextField(
+            modifier = Modifier
+                .padding(top = offset_8)
+                .fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                containerColor = Color.White
+            ),
+            value = input.value,
+            maxLines = maxLines,
+            singleLine = true,
+            onValueChange = {
+                input.value = it
+                onInputChanged(it)
+            },
+            placeholder = { Text(text = placeholderText) },
+            shape = RoundedCornerShape(radius_12),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
         )
     }
 }

@@ -88,10 +88,10 @@ fun CollectionScreen(
 ) {
 
     CollectionScreen(
-        state = viewModel.viewState.collectAsState().value.collectionState,
+        state = viewModel.viewState.collectAsState().value,
         onFloatingButtonClick = {},
-        onItemClick = { itemId ->
-            viewModel.setEvent(CollectionContract.Event.OnItemSelected(itemId))
+        onItemClick = { item ->
+            viewModel.setEvent(CollectionContract.Event.OnItemSelected(item))
         }
     )
 
@@ -107,9 +107,9 @@ fun CollectionScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollectionScreen(
-    state: CollectionContract.CollectionState,
+    state: CollectionContract.State,
     onFloatingButtonClick: () -> Unit,
-    onItemClick: (Int) -> Unit
+    onItemClick: (Phrase) -> Unit
 ) {
     Scaffold(floatingActionButton = {
         FloatingActionButton(
@@ -131,7 +131,7 @@ fun CollectionScreen(
                 modifier = Modifier.padding(start = offset_16, top = offset_16, bottom = offset_16),
                 text = stringResource(R.string.collection_title),
             )
-            if (state is CollectionContract.CollectionState.Success) {
+            if (!state.isLoading) {
 
                 OverviewSection(cardsSize = state.phrases.size)
 
@@ -143,8 +143,8 @@ fun CollectionScreen(
                     items(state.phrases) { phrase ->
                         ExpandableCard(
                             phrase = phrase,
-                            onCardClick = { onItemClick(phrase.id) },
-                            expanded = state.expandedCardIds.contains(phrase.id),
+                            onCardClick = { onItemClick(phrase) },
+                            expanded = phrase.isExpanded,
                         )
                     }
                 }

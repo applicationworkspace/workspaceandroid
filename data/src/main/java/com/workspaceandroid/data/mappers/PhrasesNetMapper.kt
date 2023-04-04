@@ -25,7 +25,8 @@ class PhrasesNetMapper @Inject constructor(private val timeHelper: ITimeHelper) 
             text = entity.phraseText.orEmpty(),
             imgUrl = entity.phraseImgUrl.orEmpty(),
             examples = entity.phraseExamples ?: emptyList(),
-            definition = entity.phraseDefinition.orEmpty()
+            definition = entity.phraseDefinition.orEmpty(),
+            isExpanded = false
         )
     }
 
